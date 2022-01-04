@@ -60,6 +60,7 @@ class _ResourcesState extends State<Resources> {
 
   @override
   Widget build(BuildContext context) {
+    double widthOfDevice = MediaQuery.of(context).size.width;
     return isLoading
         ? Center(
             child: CircularProgressIndicator(
@@ -105,12 +106,17 @@ class _ResourcesState extends State<Resources> {
                                 color: Get.isDarkMode
                                     ? offBlackColor
                                     : offWhiteColor,
-                                padding: EdgeInsets.fromLTRB(8.0, 10.0, 5, 10),
+                                padding: EdgeInsets.fromLTRB(16.0, 10.0, 5, 10),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(AppState().getCourse(), overflow: TextOverflow.ellipsis,),
+                                    Container(
+                                        width: widthOfDevice - 200,
+                                        child: Text(
+                                          AppState().getCourse(),
+                                          overflow: TextOverflow.fade,
+                                        )),
                                     Icon(Icons.arrow_drop_down_outlined)
                                   ],
                                 ),
@@ -142,7 +148,7 @@ class _ResourcesState extends State<Resources> {
                                     BorderRadius.all(Radius.circular(20.0)),
                                 child: Container(
                                   padding:
-                                      EdgeInsets.fromLTRB(8.0, 10.0, 5.0, 10),
+                                      EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 10),
                                   color: Get.isDarkMode
                                       ? offBlackColor
                                       : offWhiteColor,
@@ -168,45 +174,14 @@ class _ResourcesState extends State<Resources> {
   }
 
   Future<void> subjectListInit() async {
-    courseName = AppState().getCourse();
-    semester = int.parse(AppState().getSemester().toString().substring(9, 10));
-    subjectList = await FirebaseData().subjectOfCourse(courseName, semester);
-    setState(() {
-      isSubjectListPresent = true;
-    });
+    try {
+      courseName = AppState().getCourse();
+      semester =
+          int.parse(AppState().getSemester().toString().substring(9, 10));
+      subjectList = await FirebaseData().subjectOfCourse(courseName, semester);
+      setState(() {
+        isSubjectListPresent = true;
+      });
+    } catch (e) {}
   }
 }
-
-Widget rectangleListViewBuilder(dynamic context, List materialTypeList) {
-  return ListView.builder(
-      physics: NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: materialTypeList.length,
-      itemBuilder: (BuildContext context, int index) {
-        return Column(
-          children: [
-            index % 2 == 0 || index == 0
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      roundedRectangleDepartmentWidget(
-                          context, materialTypeList[index]),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      materialTypeList.length > index + 1
-                          ? roundedRectangleDepartmentWidget(
-                              context, materialTypeList[index + 1])
-                          : Offstage()
-                    ],
-                  )
-                : Offstage(),
-            SizedBox(
-              height: 10,
-            )
-          ],
-        );
-      });
-}
-

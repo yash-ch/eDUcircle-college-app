@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:educircle/screens/materialScreenResources.dart';
 import 'package:educircle/screens/resources.dart';
 import 'package:educircle/screens/subjectScreenResources.dart';
@@ -7,8 +6,42 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/route_manager.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../MainLayout.dart';
+
+Widget rectangleListViewBuilder(dynamic context, List materialTypeList) {
+  return ListView.builder(
+      physics: NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: materialTypeList.length,
+      itemBuilder: (BuildContext context, int index) {
+        return Column(
+          children: [
+            index % 2 == 0 || index == 0
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      roundedRectangleDepartmentWidget(
+                          context, materialTypeList[index]),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      materialTypeList.length > index + 1
+                          ? roundedRectangleDepartmentWidget(
+                              context, materialTypeList[index + 1])
+                          : Offstage()
+                    ],
+                  )
+                : Offstage(),
+            SizedBox(
+              height: 10,
+            )
+          ],
+        );
+      });
+}
 
 Widget roundedRectangleDepartmentWidget(dynamic context, String materialType) {
   double widthOfBox = ((MediaQuery.of(context).size.width) / 2) - 30;
@@ -43,25 +76,13 @@ Widget roundedRectangleDepartmentWidget(dynamic context, String materialType) {
             context,
             PageRouteBuilder(
                 pageBuilder: (BuildContext context, animation1, animation2) {
-              return SubjectScreenResources(
-                materialType: materialType,
-                courseName: courseName,
-                semester: semester,
-              );
-            }, transitionsBuilder:
-                    (context, animation, secondaryAnimation, child) {
-              const begin = Offset(1.0, 0.0);
-              const end = Offset.zero;
-              const curve = Curves.linearToEaseOut;
-
-              var tween =
-                  Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-              return SlideTransition(
-                position: animation.drive(tween),
-                child: child,
-              );
-            }));
+                  return SubjectScreenResources(
+                    materialType: materialType,
+                    courseName: courseName,
+                    semester: semester,
+                  );
+                },
+                transitionsBuilder: transitionEffectForNavigator()));
       } else {
         Fluttertoast.showToast(
             msg: "Sorry, nothing available for $courseName semester $semester.",
@@ -72,8 +93,13 @@ Widget roundedRectangleDepartmentWidget(dynamic context, String materialType) {
 }
 
 //full width used in subject screen and material screen
-Widget fullWidthListViewBuilder(dynamic context, List namesList,
-    List updatedOnList, String materialType, String whichScreen) {
+Widget fullWidthListViewBuilder(
+    dynamic context,
+    List namesList,
+    List updatedOnList,
+    List linkList,
+    String materialType,
+    String whichScreen) {
   return ListView.builder(
       // physics: NeverScrollableScrollPhysics(),
       // shrinkWrap: true,
@@ -81,14 +107,19 @@ Widget fullWidthListViewBuilder(dynamic context, List namesList,
       itemBuilder: (BuildContext context, int index) {
         return Padding(
           padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 10.0),
-          child: fullWidthRoundedRectangleWidget(context, namesList[index],
-              updatedOnList[index], materialType, whichScreen),
+          child: fullWidthRoundedRectangleWidget(
+              context,
+              namesList[index],
+              "${updatedOnList[index]}",
+              linkList[index],
+              materialType,
+              whichScreen),
         );
       });
 }
 
 Widget fullWidthRoundedRectangleWidget(dynamic context, String title,
-    String updatedOn, String materialType, String whichScreen) {
+    String updatedOn, String link, String materialType, String whichScreen) {
   return InkWell(
     child: ClipRRect(
       borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -108,21 +139,24 @@ Widget fullWidthRoundedRectangleWidget(dynamic context, String title,
                   height: 35,
                 )),
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: SmallTextSize)),
-                  Text(
-                    whichScreen == "material"
-                        ? updatedOn
-                        : "Last update : 21 December 2021",
-                    style:
-                        TextStyle(color: darkModeLightTextColor, fontSize: 12),
-                  )
-                ],
+              Container(
+                width: 300,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontSize: SmallTextSize)),
+                    Text(
+                      whichScreen == "material"
+                          ? updatedOn
+                          : "Last update : 21 December 2021",
+                      style: TextStyle(
+                          color: darkModeLightTextColor, fontSize: 12),
+                    )
+                  ],
+                ),
               )
             ],
           ),
@@ -130,26 +164,52 @@ Widget fullWidthRoundedRectangleWidget(dynamic context, String title,
       ),
     ),
     onTap: () {
-      Navigator.push(
-          context,
-          PageRouteBuilder(
-              pageBuilder: (BuildContext context, animation1, animation2) {
-            return MaterialScreen(
-                materialType: materialType, subjectName: title);
-          }, transitionsBuilder:
-                  (context, animation, secondaryAnimation, child) {
-            const begin = Offset(1.0, 0.0);
-            const end = Offset.zero;
-            const curve = Curves.linearToEaseOut;
-
-            var tween =
-                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-            return SlideTransition(
-              position: animation.drive(tween),
-              child: child,
-            );
-          }));
+      whichScreen == "material"
+          ? launchURL(link)
+          : Navigator.push(
+              context,
+              PageRouteBuilder(
+                  pageBuilder: (BuildContext context, animation1, animation2) {
+                    return MaterialScreen(
+                        materialType: materialType, subjectName: title);
+                  },
+                  transitionsBuilder: transitionEffectForNavigator()));
     },
   );
+}
+
+Future<void> launchURL(String url) async {
+  if (url != "") {
+    if (url.contains("http://") || url.contains("https://")) {
+      print(url);
+    } else {
+      url = "http://" + url;
+      print(url);
+    }
+    if (!await launch(
+      url,
+      forceSafariVC: false,
+      forceWebView: false,
+      headers: <String, String>{'my_header_key': 'my_header_value'},
+    )) {
+      throw 'Could not launch $url';
+    }
+  } else {
+    Fluttertoast.showToast(msg: "Sorry, link is broken.");
+  }
+}
+
+transitionEffectForNavigator() {
+  return (context, animation, secondaryAnimation, child) {
+    const begin = Offset(1.0, 0.0);
+    const end = Offset.zero;
+    const curve = Curves.linearToEaseOut;
+
+    var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+    return SlideTransition(
+      position: animation.drive(tween),
+      child: child,
+    );
+  };
 }

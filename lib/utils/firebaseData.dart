@@ -12,10 +12,8 @@ class FirebaseData {
 
   Future<List> courses() async {
     List nameOfTheCourses = [];
-    QuerySnapshot<Map<String, dynamic>> data = await fireStore
-        .collection('Courses')
-        .where("active", isEqualTo: true)
-        .get();
+    QuerySnapshot<Map<String, dynamic>> data =
+        await fireStore.collection('Courses').orderBy("name").get();
     for (var item in data.docs) {
       nameOfTheCourses.add(item["name"]);
     }
@@ -32,7 +30,7 @@ class FirebaseData {
   Future<List> materialType() async {
     List materialTypeList = [];
     QuerySnapshot<Map<String, dynamic>> data =
-        await fireStore.collection('MaterialType').get();
+        await fireStore.collection('MaterialType').orderBy("name").get();
     for (var item in data.docs) {
       materialTypeList.add(item["name"]);
     }
@@ -92,7 +90,9 @@ class FirebaseData {
             QuerySnapshot<Map<String, dynamic>> materialReference =
                 await subject.reference.collection("material").get();
             for (var materialItem in materialReference.docs) {
-              allTheMaterial.add(materialItem.data());
+              if (materialItem["name"] != "none") {
+                allTheMaterial.add(materialItem.data());
+              }
             }
           }
         }

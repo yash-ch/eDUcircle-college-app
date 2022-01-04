@@ -45,27 +45,20 @@ class _SubjectScreenResourcesState extends State<SubjectScreenResources> {
                     color: Get.isDarkMode ? Colors.white : Colors.black),
                 onPressed: () => Navigator.of(context).pop(),
               ),
-              // actions: [
-              //   Padding(
-              //     padding: EdgeInsets.fromLTRB(8.0, 8.0, 16.0, 8.0),
-              //     child: InkWell(onTap: () {}, child: Offstage()),
-              //   )
-              // ],
             ),
             body: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                    padding: const EdgeInsets.fromLTRB(16.0, 10.0, 0, 10.0),
-                    child: Text("Core Subjects",
+                  padding: const EdgeInsets.fromLTRB(16.0, 10.0, 0, 10.0),
+                  child: Text("Core Subjects",
                       style: Get.isDarkMode
                           ? darkModeLightTextStyle
                           : lightModeLightTextStyle),
-
                 ),
                 Expanded(
                   child: fullWidthListViewBuilder(context, subjectList,
-                      subjectList, widget.materialType, "subject"),
+                      subjectList, subjectList, widget.materialType, "subject"),
                 ),
               ],
             ),

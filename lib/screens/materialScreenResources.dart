@@ -27,7 +27,7 @@ class _MaterialScreenState extends State<MaterialScreen> {
 
   @override
   void initState() {
-    loadData();
+    _loadData();
     super.initState();
   }
 
@@ -72,30 +72,38 @@ class _MaterialScreenState extends State<MaterialScreen> {
                       ? Container(
                           height: double.maxFinite,
                           width: double.maxFinite,
-                          child: Text(
-                            "Sorry, no ${widget.materialType} availabe.",
-                            style: TextStyle(fontSize: LargeTextSize),
+                          child: Center(
+                            child: Text(
+                              "Sorry, no ${widget.materialType} availabe.",
+                            ),
                           ),
                         )
-                      : fullWidthListViewBuilder(context, itemsNameList,
-                          itemsUpdatedOnList, widget.materialType, "material"),
+                      : fullWidthListViewBuilder(
+                          context,
+                          itemsNameList,
+                          itemsUpdatedOnList,
+                          itemsLinkList,
+                          widget.materialType,
+                          "material"),
                 ),
               ],
             ),
           );
   }
 
-  Future<void> loadData() async {
-    List materialData = await FirebaseData()
-        .materialData(widget.materialType, widget.subjectName, semester);
-    for (var item in materialData) {
-      itemsIdList.add(item["id"]);
-      itemsLinkList.add(item["link"]);
-      itemsNameList.add(item["name"]);
-      itemsUpdatedOnList.add(item["updatedOn"]);
-    }
-    setState(() {
-      isMaterialLoad = true;
-    });
+  Future<void> _loadData() async {
+    try {
+      List materialData = await FirebaseData()
+          .materialData(widget.materialType, widget.subjectName, semester);
+      for (var item in materialData) {
+        itemsIdList.add(item["id"]);
+        itemsLinkList.add(item["link"]);
+        itemsNameList.add(item["name"]);
+        itemsUpdatedOnList.add(item["updatedOn"]);
+      }
+      setState(() {
+        isMaterialLoad = true;
+      });
+    } catch (e) {}
   }
 }
