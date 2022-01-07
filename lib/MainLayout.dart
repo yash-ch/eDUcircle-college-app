@@ -1,4 +1,4 @@
-import 'package:educircle/screens/resources.dart';
+import 'package:educircle/screens/resourcesPage.dart';
 import 'package:educircle/utils/firebaseData.dart';
 import 'package:educircle/utils/style.dart';
 import 'package:flutter/cupertino.dart';

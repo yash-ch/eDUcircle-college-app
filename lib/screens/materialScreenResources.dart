@@ -1,4 +1,4 @@
-import 'package:educircle/screens/resources.dart';
+import 'package:educircle/screens/resourcesPage.dart';
 import 'package:educircle/utils/firebaseData.dart';
 import 'package:educircle/utils/listViewBuilders.dart';
 import 'package:educircle/utils/style.dart';
@@ -33,30 +33,29 @@ class _MaterialScreenState extends State<MaterialScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return !isMaterialLoad
-        ? Center(
-            child: CircularProgressIndicator(
-            color: selectedIconColor,
-            strokeWidth: 4.0,
-          ))
-        : Scaffold(
-            backgroundColor:
-                Get.isDarkMode ? darkBackgroundColor : lightBackgroundColor,
-            appBar: AppBar(
-              backgroundColor:
-                  Get.isDarkMode ? darkBackgroundColor : lightBackgroundColor,
-              title: Text(
-                widget.materialType,
-                style:
-                    Get.isDarkMode ? DarkAppBarTextStyle : LightAppBarTextStyle,
-              ),
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back_ios_new_rounded,
-                    color: Get.isDarkMode ? Colors.white : Colors.black),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ),
-            body: Column(
+    return Scaffold(
+      backgroundColor:
+          Get.isDarkMode ? darkBackgroundColor : lightBackgroundColor,
+      appBar: AppBar(
+        backgroundColor:
+            Get.isDarkMode ? darkBackgroundColor : lightBackgroundColor,
+        title: Text(
+          widget.materialType,
+          style: Get.isDarkMode ? DarkAppBarTextStyle : LightAppBarTextStyle,
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_new_rounded,
+              color: Get.isDarkMode ? Colors.white : Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+      body: !isMaterialLoad
+          ? Center(
+              child: CircularProgressIndicator(
+              color: selectedIconColor,
+              strokeWidth: 4.0,
+            ))
+          : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               children: [
@@ -88,7 +87,7 @@ class _MaterialScreenState extends State<MaterialScreen> {
                 ),
               ],
             ),
-          );
+    );
   }
 
   Future<void> _loadData() async {

@@ -1,5 +1,5 @@
 import 'package:educircle/screens/materialScreenResources.dart';
-import 'package:educircle/screens/resources.dart';
+import 'package:educircle/screens/resourcesPage.dart';
 import 'package:educircle/screens/subjectScreenResources.dart';
 import 'package:educircle/utils/style.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +7,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/route_manager.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../MainLayout.dart';
 
 Widget rectangleListViewBuilder(dynamic context, List materialTypeList) {
@@ -101,10 +100,11 @@ Widget fullWidthListViewBuilder(
     String materialType,
     String whichScreen) {
   return ListView.builder(
-      // physics: NeverScrollableScrollPhysics(),
-      // shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
       itemCount: namesList.length,
       itemBuilder: (BuildContext context, int index) {
+        print(index);
         return Padding(
           padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 10.0),
           child: fullWidthRoundedRectangleWidget(
@@ -149,9 +149,7 @@ Widget fullWidthRoundedRectangleWidget(dynamic context, String title,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(fontSize: SmallTextSize)),
                     Text(
-                      whichScreen == "material"
-                          ? updatedOn
-                          : "Last update : 21 December 2021",
+                      "Updated On : $updatedOn",
                       style: TextStyle(
                           color: darkModeLightTextColor, fontSize: 12),
                     )
@@ -212,4 +210,13 @@ transitionEffectForNavigator() {
       child: child,
     );
   };
+}
+
+lightTextTitle(String title) {
+  return Padding(
+    padding: const EdgeInsets.fromLTRB(16.0, 10.0, 0, 10.0),
+    child: Text(title,
+        style:
+            Get.isDarkMode ? darkModeLightTextStyle : lightModeLightTextStyle),
+  );
 }

@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:get/route_manager.dart';
 
-// Map svgLinkMap = Map<String, String>();
 List subjectList = [];
 bool isSubjectListPresent = false;
 
@@ -24,30 +23,9 @@ class Resources extends StatefulWidget {
 class _ResourcesState extends State<Resources> {
   @override
   void initState() {
-    // FirebaseData().try1();
-    // FirebaseData().subjectOfCourse("B.Sc. (H) Physics", 1);
-    // FirebaseData().materialData("Books", "Mathematics Foundation for Electronics", 1);
-    // FirebaseData().addingCollection();
     subjectListInit();
     super.initState();
   }
-
-  // List courseList = [
-  //   "B.Sc. (H) Computer Science",
-  //   "B.Sc. (H) Electronics",
-  //   "B.Sc. (H) Mathematics",
-  //   "B.Sc. (H) Physics",
-  //   "B.Sc. (H) Chemistry",
-  //   "B.Sc. Mathematical Science",
-  //   "B.Sc. Physical Sciences (CS)",
-  //   "B.Sc. Physical Sciences (Chemistry)",
-  //   "B.Sc. Life Sciences",
-  //   "B.Com (H)",
-  //   "B.A. Programme",
-  //   "B.A. (H) English",
-  //   "B.Sc. (H) Zoology",
-  //   "Bachelor in Management Studies",
-  // ];
 
   List semesterList = [
     "Semester 1",
@@ -73,13 +51,7 @@ class _ResourcesState extends State<Resources> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16.0, 10.0, 0, 10.0),
-                    child: Text("Courses",
-                        style: Get.isDarkMode
-                            ? darkModeLightTextStyle
-                            : lightModeLightTextStyle),
-                  ),
+                  lightTextTitle("Course"),
                   Row(
                     children: [
                       Flexible(
