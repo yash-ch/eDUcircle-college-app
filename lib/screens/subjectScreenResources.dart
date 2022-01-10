@@ -72,8 +72,12 @@ class _SubjectScreenResourcesState extends State<SubjectScreenResources> {
                           subjectList,
                           widget.materialType,
                           "subject"),
+                      Padding(padding: EdgeInsets.all(5)),
                       lightTextTitle("AECC"),
-                      lightTextTitle("Generic Elective")
+                      Padding(padding: EdgeInsets.all(5)),
+                      [1, 2, 3, 4].contains(semester)
+                          ? lightTextTitle("Generic Elective")
+                          : Offstage()
                     ],
                   ),
                 ),

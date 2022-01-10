@@ -38,7 +38,7 @@ class _ResourcesState extends State<Resources> {
 
   @override
   Widget build(BuildContext context) {
-    double widthOfDevice = MediaQuery.of(context).size.width;
+    double widthOfDevice = widthOrHeightOfDevice(context)["width"];
     return isLoading
         ? Center(
             child: CircularProgressIndicator(

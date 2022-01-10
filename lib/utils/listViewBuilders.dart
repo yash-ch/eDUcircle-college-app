@@ -43,7 +43,7 @@ Widget rectangleListViewBuilder(dynamic context, List materialTypeList) {
 }
 
 Widget roundedRectangleDepartmentWidget(dynamic context, String materialType) {
-  double widthOfBox = ((MediaQuery.of(context).size.width) / 2) - 30;
+  double widthOfBox = (widthOrHeightOfDevice(context)["width"] / 2) - 30;
   return InkWell(
     child: ClipRRect(
       borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -214,7 +214,7 @@ transitionEffectForNavigator() {
 
 lightTextTitle(String title) {
   return Padding(
-    padding: const EdgeInsets.fromLTRB(16.0, 10.0, 0, 10.0),
+    padding: const EdgeInsets.fromLTRB(16.0, 0.0, 0, 10.0),
     child: Text(title,
         style:
             Get.isDarkMode ? darkModeLightTextStyle : lightModeLightTextStyle),

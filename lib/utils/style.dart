@@ -35,12 +35,12 @@ Color darkModeLightTextColor = Colors.white70;
 Color lightModeLightTextColor = Colors.black54;
 
 TextStyle darkModeLightTextStyle = TextStyle(
-    color: darkModeLightTextColor ,
+    color: darkModeLightTextColor,
     fontSize: SmallTextSize,
     fontWeight: FontWeight.w500);
 
 TextStyle lightModeLightTextStyle = TextStyle(
-    color: lightModeLightTextColor ,
+    color: lightModeLightTextColor,
     fontSize: SmallTextSize,
     fontWeight: FontWeight.w500);
 
@@ -68,6 +68,13 @@ class Style {
       appBarTheme: AppBarTheme(
         backgroundColor: darkBackgroundColor,
       ));
+}
+
+Map widthOrHeightOfDevice(context) {
+  double widthOfDevice = MediaQuery.of(context).size.width;
+  double heightOfDevice = MediaQuery.of(context).size.width;
+
+  return {"width": widthOfDevice, "height": heightOfDevice};
 }
 
 //new colors
