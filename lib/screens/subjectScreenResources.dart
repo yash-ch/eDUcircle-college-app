@@ -35,6 +35,7 @@ class _SubjectScreenResourcesState extends State<SubjectScreenResources> {
       backgroundColor:
           Get.isDarkMode ? darkBackgroundColor : lightBackgroundColor,
       appBar: AppBar(
+        elevation: 0,
         backgroundColor:
             Get.isDarkMode ? darkBackgroundColor : lightBackgroundColor,
         title: Text(

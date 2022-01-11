@@ -37,6 +37,7 @@ class _MaterialScreenState extends State<MaterialScreen> {
       backgroundColor:
           Get.isDarkMode ? darkBackgroundColor : lightBackgroundColor,
       appBar: AppBar(
+        elevation: 0,
         backgroundColor:
             Get.isDarkMode ? darkBackgroundColor : lightBackgroundColor,
         title: Text(

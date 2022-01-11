@@ -67,6 +67,7 @@ class _MainLayoutState extends State<MainLayout> {
       backgroundColor:
           Get.isDarkMode ? darkBackgroundColor : lightBackgroundColor,
       appBar: AppBar(
+        elevation: 0.0,
         backgroundColor:
             Get.isDarkMode ? darkBackgroundColor : lightBackgroundColor,
         title: _topBarName.elementAt(_selectedTabIndex),

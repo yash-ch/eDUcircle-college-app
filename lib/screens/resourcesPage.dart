@@ -65,6 +65,7 @@ class _ResourcesState extends State<Resources> {
                             child: InkWell(
                               onTap: () {
                                 showMaterialRadioPicker(
+                                    headerColor: selectedIconColor,
                                     title: "Select Course",
                                     context: context,
                                     items: courseList,
@@ -105,6 +106,7 @@ class _ResourcesState extends State<Resources> {
                             child: InkWell(
                               onTap: () {
                                 showMaterialRadioPicker(
+                                    headerColor: selectedIconColor,
                                     title: "Select Semester",
                                     context: context,
                                     items: semesterList,

@@ -151,7 +151,7 @@ Widget fullWidthRoundedRectangleWidget(dynamic context, String title,
                     Text(
                       "Updated On : $updatedOn",
                       style: TextStyle(
-                          color: darkModeLightTextColor, fontSize: 12),
+                          color: Get.isDarkMode? darkModeLightTextColor : lightModeLightTextColor, fontSize: 12),
                     )
                   ],
                 ),
