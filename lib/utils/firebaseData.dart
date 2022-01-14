@@ -98,6 +98,27 @@ class FirebaseData {
         }
       }
     }
+    return allTheMaterial;
+  }
+
+  Future<List> eventsData(String whichTypeEvent) async {
+    List allTheMaterial = [];
+
+    QuerySnapshot<Map<String, dynamic>> eventData = await fireStore
+        .collection('HomePage')
+        .where("name", isEqualTo: whichTypeEvent)
+        .get();
+
+    for (var event in eventData.docs) {
+      QuerySnapshot<Map<String, dynamic>> postsReference =
+          await event.reference.collection("Posts").get();
+
+      for (var post in postsReference.docs) {
+        // if (post["name"] != "none") {
+        allTheMaterial.add(post.data());
+        // }
+      }
+    }
     print(allTheMaterial);
     return allTheMaterial;
   }

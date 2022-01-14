@@ -1,4 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:educircle/MainLayout.dart';
+import 'package:educircle/utils/firebaseData.dart';
 import 'package:educircle/utils/listViewBuilders.dart';
 import 'package:educircle/utils/style.dart';
 import 'package:flutter/material.dart';
@@ -17,25 +19,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedEventOrNewsIndex = 0; //0 for Events and 1 for News
 
-  //for events tab
-  final List<Color> colors = [
-    Colors.red,
-    Colors.orange,
-    Colors.yellow,
-    Colors.green,
-    Colors.blue,
-    Colors.indigo,
-    Colors.purple,
-  ];
-  final List<String> letters = [
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "F",
-    "G",
-  ];
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -140,86 +127,175 @@ class _HomePageState extends State<HomePage> {
           children: [
             Center(
               child: Container(
-                padding: EdgeInsets.fromLTRB(0.0, 8.0, 0, 16.0),
+                margin: EdgeInsets.fromLTRB(0.0, 8.0, 0, 16.0),
                 width: widthOrHeightOfDevice(context)["width"] - 32,
                 height: widthOrHeightOfDevice(context)["width"] - 32,
                 child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                  child: CarouselSlider.builder(
-                      unlimitedMode: true,
-                      slideBuilder: (index) {
-                        return Container(
-                          alignment: Alignment.center,
-                          color: colors[index],
-                          child: Text(
-                            letters[index],
-                            style:
-                                TextStyle(fontSize: 200, color: Colors.white),
-                          ),
-                        );
-                      },
-                      slideTransform: CubeTransform(),
-                      slideIndicator: CircularSlideIndicator(
-                        currentIndicatorColor: selectedIconColor,
-                        indicatorBackgroundColor: Colors.white60,
-                        padding: EdgeInsets.only(bottom: 32),
-                      ),
-                      itemCount: colors.length),
-                ),
+                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                    child: isHomePageDataLoaded
+                        ? CarouselSlider.builder(
+                            unlimitedMode: true,
+                            // enableAutoSlider: true,
+                            slideBuilder: (index) {
+                              return InkWell(
+                                child: Container(
+                                  child: Expanded(
+                                    child: CachedNetworkImage(
+                                      imageUrl: topBannerImageLinks[index],
+                                      placeholder: (context, url) => Center(
+                                          child: CircularProgressIndicator(
+                                        color: selectedIconColor,
+                                        strokeWidth: 4.0,
+                                      )),
+                                      errorWidget: (context, url, error) =>
+                                          Icon(Icons.error),
+                                    ),
+                                  ),
+                                ),
+                                onTap: () {
+                                  launchURL(topBannerWebsiteLinks[index]);
+                                },
+                              );
+                            },
+                            slideTransform: CubeTransform(),
+                            slideIndicator: CircularSlideIndicator(
+                              currentIndicatorColor: selectedIconColor,
+                              indicatorBackgroundColor: Colors.white60,
+                              padding: EdgeInsets.only(bottom: 32),
+                            ),
+                            itemCount: topBannerImageLinks.length)
+                        : Center(
+                            child: CircularProgressIndicator(
+                            color: selectedIconColor,
+                            strokeWidth: 4.0,
+                          ))),
               ),
             ),
             lightTextTitle("Today's Events"),
             Container(
                 margin: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-                height: 200.0,
+                height: 160.0,
                 child: ClipRRect(
                   borderRadius: BorderRadius.all(Radius.circular(20.0)),
                   child: new ListView(
                     scrollDirection: Axis.horizontal,
                     children: <Widget>[
-                      Container(
-                        width: 160.0,
-                        color: Colors.blue,
+                      ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        child: Container(
+                          width: 160.0,
+                          color: Colors.blue,
+                        ),
                       ),
-                      Container(
-                        width: 160.0,
-                        color: Colors.green,
+                      Padding(padding: EdgeInsets.only(right: 10.0)),
+                      ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        child: Container(
+                          width: 160.0,
+                          color: Colors.green,
+                        ),
                       ),
-                      Container(
-                        width: 160.0,
-                        color: Colors.cyan,
+                      Padding(padding: EdgeInsets.only(right: 10.0)),
+                      ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        child: Container(
+                          width: 160.0,
+                          color: Colors.cyan,
+                        ),
                       ),
-                      Container(
-                        width: 160.0,
-                        color: Colors.amber,
+                      Padding(padding: EdgeInsets.only(right: 10.0)),
+                      ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        child: Container(
+                          width: 160.0,
+                          color: Colors.amber,
+                        ),
+                      ),
+                    ],
+                  ),
+                )),
+            lightTextTitle("This Week's Events"),
+            Container(
+                margin: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+                height: 160.0,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  child: new ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: <Widget>[
+                      ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        child: Container(
+                          width: 160.0,
+                          color: Colors.blue,
+                        ),
+                      ),
+                      Padding(padding: EdgeInsets.only(right: 10.0)),
+                      ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        child: Container(
+                          width: 160.0,
+                          color: Colors.green,
+                        ),
+                      ),
+                      Padding(padding: EdgeInsets.only(right: 10.0)),
+                      ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        child: Container(
+                          width: 160.0,
+                          color: Colors.cyan,
+                        ),
+                      ),
+                      Padding(padding: EdgeInsets.only(right: 10.0)),
+                      ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        child: Container(
+                          width: 160.0,
+                          color: Colors.amber,
+                        ),
                       ),
                     ],
                   ),
                 )),
             lightTextTitle("Upcoming Events"),
             Container(
-                margin: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-                height: 200.0,
+                margin: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 10.0),
+                height: 160.0,
                 child: ClipRRect(
                   borderRadius: BorderRadius.all(Radius.circular(20.0)),
                   child: new ListView(
                     scrollDirection: Axis.horizontal,
                     children: <Widget>[
-                      Container(
-                        width: 160.0,
-                        color: Colors.blue,
+                      ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        child: Container(
+                          width: 160.0,
+                          color: Colors.blue,
+                        ),
                       ),
-                      Container(
-                        width: 160.0,
-                        color: Colors.green,
+                      Padding(padding: EdgeInsets.only(right: 10.0)),
+                      ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        child: Container(
+                          width: 160.0,
+                          color: Colors.green,
+                        ),
                       ),
-                      Container(
-                        width: 160.0,
-                        color: Colors.cyan,
+                      Padding(padding: EdgeInsets.only(right: 10.0)),
+                      ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        child: Container(
+                          width: 160.0,
+                          color: Colors.cyan,
+                        ),
                       ),
-                      Container(
-                        width: 160.0,
-                        color: Colors.amber,
+                      Padding(padding: EdgeInsets.only(right: 10.0)),
+                      ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        child: Container(
+                          width: 160.0,
+                          color: Colors.amber,
+                        ),
                       ),
                     ],
                   ),

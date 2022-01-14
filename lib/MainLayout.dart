@@ -20,12 +20,18 @@ List materialTypeList = [];
 List courseList = [];
 bool isLoading = true;
 
+//for HomePage images links
+List topBannerImageLinks = [];
+List topBannerWebsiteLinks = [];
+bool isHomePageDataLoaded = false;
+
 class _MainLayoutState extends State<MainLayout> {
   int _selectedTabIndex = 0;
 
   @override
   void initState() {
     svgLinkDic();
+    loadingEvents();
     super.initState();
   }
 
@@ -34,7 +40,6 @@ class _MainLayoutState extends State<MainLayout> {
     Widget _tab = Resources();
     List<Widget> _topButtons = <Widget>[Offstage()];
 
-    // List<Widget> _topButtons = <Widget>[Text("error")];
     switch (_selectedTabIndex) {
       case 0:
         {
@@ -139,4 +144,17 @@ class _MainLayoutState extends State<MainLayout> {
   }
 
   void _onPressedAppBarHome() {}
+
+  Future<void> loadingEvents() async {
+    List rawTopBannerData = await FirebaseData().eventsData("top_banners");
+
+    for (var item in rawTopBannerData) {
+      topBannerImageLinks.add(item["image_link"]);
+      topBannerWebsiteLinks.add(item["link"]);
+    }
+
+    setState(() {
+      isHomePageDataLoaded = true;
+    });
+  }
 }
