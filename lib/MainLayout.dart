@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class MainLayout extends StatefulWidget {
   const MainLayout({Key? key}) : super(key: key);
@@ -23,7 +24,17 @@ bool isLoading = true;
 //for HomePage images links
 List topBannerImageLinks = [];
 List topBannerWebsiteLinks = [];
-bool isHomePageDataLoaded = false;
+bool isTopBannerDataLoaded = false;
+bool isEventsDataLoaded = false;
+
+List todaysEventsImageLinks = [];
+List todaysEventsWebsiteLinks = [];
+
+List weekEventsImageLinks = [];
+List weekEventsWebsiteLinks = [];
+
+List upcomingEventsImageLinks = [];
+List upcomingEventsWebsiteLinks = [];
 
 class _MainLayoutState extends State<MainLayout> {
   int _selectedTabIndex = 0;
@@ -154,7 +165,36 @@ class _MainLayoutState extends State<MainLayout> {
     }
 
     setState(() {
-      isHomePageDataLoaded = true;
+      isTopBannerDataLoaded = true;
+    });
+
+    String todaysDate =
+        (DateFormat("dd MM yy").format(DateTime.now())).toString();
+    List rawTodaysEventsData = await FirebaseData().eventsData("all_events");
+
+    for (var item in rawTodaysEventsData) {
+      if (item["date"] == todaysDate) {
+        todaysEventsImageLinks.add(item["image_link"]);
+        todaysEventsWebsiteLinks.add(item["link"]);
+      }
+      if (item["date"].toString().split(" ")[1] == todaysDate.split(" ")[1] &&
+          item["date"].toString().split(" ")[2] == todaysDate.split(" ")[2]) {
+        if (int.parse(item["date"].toString().split(" ")[0]) >
+                int.parse(todaysDate.split(" ")[0]) &&
+            int.parse(item["date"].toString().split(" ")[0]) <
+                int.parse(todaysDate.split(" ")[0]) + 7) {
+          weekEventsImageLinks.add(item["image_link"]);
+          weekEventsWebsiteLinks.add(item["link"]);
+        } else if (int.parse(item["date"].toString().split(" ")[0]) >
+            int.parse(todaysDate.split(" ")[0]) + 7) {
+          upcomingEventsImageLinks.add(item["image_link"]);
+          upcomingEventsWebsiteLinks.add(item["link"]);
+        }
+      }
+    }
+
+    setState(() {
+      isEventsDataLoaded = true;
     });
   }
 }

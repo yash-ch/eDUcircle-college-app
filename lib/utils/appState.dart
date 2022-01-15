@@ -28,7 +28,6 @@ class AppState {
   String getCourse() {
     return getSetting("Course", "B.Sc. (H) Computer Science");
   }
-
   
   void setSemester(String semester) {
     putSetting("Semester", semester);

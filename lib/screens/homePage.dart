@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:educircle/MainLayout.dart';
-import 'package:educircle/utils/firebaseData.dart';
 import 'package:educircle/utils/listViewBuilders.dart';
 import 'package:educircle/utils/style.dart';
 import 'package:flutter/material.dart';
@@ -128,181 +127,129 @@ class _HomePageState extends State<HomePage> {
             Center(
               child: Container(
                 margin: EdgeInsets.fromLTRB(0.0, 8.0, 0, 16.0),
-                width: widthOrHeightOfDevice(context)["width"] - 32,
-                height: widthOrHeightOfDevice(context)["width"] - 32,
-                child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                    child: isHomePageDataLoaded
-                        ? CarouselSlider.builder(
-                            unlimitedMode: true,
-                            // enableAutoSlider: true,
-                            slideBuilder: (index) {
-                              return InkWell(
+                width: widthOrHeightOfDevice(context)["width"] - 22,
+                height: widthOrHeightOfDevice(context)["width"] - 22,
+                child: isTopBannerDataLoaded
+                    ? CarouselSlider.builder(
+                        unlimitedMode: true,
+                        enableAutoSlider: true,
+                        autoSliderDelay: Duration(seconds: 10),
+                        autoSliderTransitionTime: Duration(milliseconds: 300),
+                        slideBuilder: (index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: InkWell(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20.0)),
+                              child: ClipRRect(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20.0)),
                                 child: Container(
-                                  child: Expanded(
-                                    child: CachedNetworkImage(
-                                      imageUrl: topBannerImageLinks[index],
-                                      placeholder: (context, url) => Center(
-                                          child: CircularProgressIndicator(
-                                        color: selectedIconColor,
-                                        strokeWidth: 4.0,
-                                      )),
-                                      errorWidget: (context, url, error) =>
-                                          Icon(Icons.error),
-                                    ),
+                                  child: CachedNetworkImage(
+                                    imageUrl: topBannerImageLinks[index],
+                                    placeholder: (context, url) => Center(
+                                        child: CircularProgressIndicator(
+                                      color: selectedIconColor,
+                                      strokeWidth: 4.0,
+                                    )),
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error),
                                   ),
                                 ),
-                                onTap: () {
-                                  launchURL(topBannerWebsiteLinks[index]);
-                                },
-                              );
-                            },
-                            slideTransform: CubeTransform(),
-                            slideIndicator: CircularSlideIndicator(
-                              currentIndicatorColor: selectedIconColor,
-                              indicatorBackgroundColor: Colors.white60,
-                              padding: EdgeInsets.only(bottom: 32),
+                              ),
+                              onTap: () {
+                                launchURL(topBannerWebsiteLinks[index]);
+                              },
                             ),
-                            itemCount: topBannerImageLinks.length)
-                        : Center(
-                            child: CircularProgressIndicator(
-                            color: selectedIconColor,
-                            strokeWidth: 4.0,
-                          ))),
+                          );
+                        },
+                        slideIndicator: CircularSlideIndicator(
+                          currentIndicatorColor: selectedIconColor,
+                          indicatorBackgroundColor: Colors.white60,
+                          padding: EdgeInsets.only(bottom: 32),
+                        ),
+                        itemCount: topBannerImageLinks.length)
+                    : Center(
+                        child: CircularProgressIndicator(
+                        color: selectedIconColor,
+                        strokeWidth: 4.0,
+                      )),
               ),
             ),
-            lightTextTitle("Today's Events"),
-            Container(
-                margin: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-                height: 160.0,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                  child: new ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: <Widget>[
-                      ClipRRect(
+            todaysEventsImageLinks.isNotEmpty
+                ? lightTextTitle("Today's Events")
+                : Offstage(),
+            todaysEventsImageLinks.isNotEmpty
+                ? Container(
+                    margin: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+                    height: 160.0,
+                    child: ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                        child: Container(
-                          width: 160.0,
-                          color: Colors.blue,
-                        ),
-                      ),
-                      Padding(padding: EdgeInsets.only(right: 10.0)),
-                      ClipRRect(
+                        child: eventListView(
+                            todaysEventsImageLinks, todaysEventsWebsiteLinks)))
+                : Offstage(),
+            weekEventsImageLinks.isNotEmpty
+                ? lightTextTitle("This Week's Events")
+                : Offstage(),
+            weekEventsImageLinks.isNotEmpty
+                ? Container(
+                    margin: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+                    height: 160.0,
+                    child: ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                        child: Container(
-                          width: 160.0,
-                          color: Colors.green,
-                        ),
-                      ),
-                      Padding(padding: EdgeInsets.only(right: 10.0)),
-                      ClipRRect(
+                        child: eventListView(
+                            weekEventsImageLinks, weekEventsWebsiteLinks)))
+                : Offstage(),
+            upcomingEventsImageLinks.isNotEmpty
+                ? lightTextTitle("Upcoming Events")
+                : Offstage(),
+            upcomingEventsImageLinks.isNotEmpty
+                ? Container(
+                    margin: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+                    height: 160.0,
+                    child: ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                        child: Container(
-                          width: 160.0,
-                          color: Colors.cyan,
-                        ),
-                      ),
-                      Padding(padding: EdgeInsets.only(right: 10.0)),
-                      ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                        child: Container(
-                          width: 160.0,
-                          color: Colors.amber,
-                        ),
-                      ),
-                    ],
-                  ),
-                )),
-            lightTextTitle("This Week's Events"),
-            Container(
-                margin: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-                height: 160.0,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                  child: new ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: <Widget>[
-                      ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                        child: Container(
-                          width: 160.0,
-                          color: Colors.blue,
-                        ),
-                      ),
-                      Padding(padding: EdgeInsets.only(right: 10.0)),
-                      ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                        child: Container(
-                          width: 160.0,
-                          color: Colors.green,
-                        ),
-                      ),
-                      Padding(padding: EdgeInsets.only(right: 10.0)),
-                      ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                        child: Container(
-                          width: 160.0,
-                          color: Colors.cyan,
-                        ),
-                      ),
-                      Padding(padding: EdgeInsets.only(right: 10.0)),
-                      ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                        child: Container(
-                          width: 160.0,
-                          color: Colors.amber,
-                        ),
-                      ),
-                    ],
-                  ),
-                )),
-            lightTextTitle("Upcoming Events"),
-            Container(
-                margin: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 10.0),
-                height: 160.0,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                  child: new ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: <Widget>[
-                      ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                        child: Container(
-                          width: 160.0,
-                          color: Colors.blue,
-                        ),
-                      ),
-                      Padding(padding: EdgeInsets.only(right: 10.0)),
-                      ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                        child: Container(
-                          width: 160.0,
-                          color: Colors.green,
-                        ),
-                      ),
-                      Padding(padding: EdgeInsets.only(right: 10.0)),
-                      ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                        child: Container(
-                          width: 160.0,
-                          color: Colors.cyan,
-                        ),
-                      ),
-                      Padding(padding: EdgeInsets.only(right: 10.0)),
-                      ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                        child: Container(
-                          width: 160.0,
-                          color: Colors.amber,
-                        ),
-                      ),
-                    ],
-                  ),
-                )),
+                        child: eventListView(upcomingEventsImageLinks,
+                            upcomingEventsWebsiteLinks)))
+                : Offstage(),
           ],
         ),
       ),
     );
+  }
+
+  Widget eventListView(List imageLinkList, List websitesLink) {
+    return ListView.builder(
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: imageLinkList.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                child: InkWell(
+                  child: Container(
+                    width: 160.0,
+                    height: 160.0,
+                    child: CachedNetworkImage(
+                      imageUrl: imageLinkList[index],
+                      placeholder: (context, url) => Center(
+                          child: CircularProgressIndicator(
+                        color: selectedIconColor,
+                        strokeWidth: 4.0,
+                      )),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    ),
+                  ),
+                  onTap: () {
+                    launchURL(websitesLink[index]);
+                  },
+                ),
+              ),
+              Padding(padding: EdgeInsets.only(right: 10.0)),
+            ],
+          );
+        });
   }
 }
