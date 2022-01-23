@@ -119,7 +119,72 @@ class FirebaseData {
         // }
       }
     }
-    print(allTheMaterial);
+    // print(allTheMaterial);
     return allTheMaterial;
+  }
+
+  Future<List> aeccGESubjects(int sem, String aeccOrGE, bool fullData) async {
+    List subjectList = [];
+    //for returning AECC or GE subjects
+    QuerySnapshot<Map<String, dynamic>> materialTypedata = await fireStore
+        .collection('MaterialType')
+        .where("name", isEqualTo: "Timetable")
+        .get();
+    try {
+      for (var materialType in materialTypedata.docs) {
+        QuerySnapshot<Map<String, dynamic>> semesterReference =
+            await navigateIntoCollection(materialType, "semester", "sem$sem");
+        for (var semester in semesterReference.docs) {
+          QuerySnapshot<Map<String, dynamic>> subjectReference =
+              await semester.reference.collection(aeccOrGE).get();
+          for (var subject in subjectReference.docs) {
+            if (subject["name"] != "none") {
+              fullData
+                  ? subjectList.add(subject.data())
+                  : subjectList.add(subject["name"]);
+            }
+          }
+        }
+      }
+    } on FirebaseException catch (e) {
+      print(e.message);
+    }
+    return subjectList;
+  }
+
+  Future<List> aeccOrGEData(
+    int sem,
+    String aeccOrGE,
+    String materialType,
+    String subjectName,
+  ) async {
+    List materialList = [];
+    QuerySnapshot<Map<String, dynamic>> materialTypedata = await fireStore
+        .collection('MaterialType')
+        .where("name", isEqualTo: materialType)
+        .get();
+
+    try {
+      for (var material in materialTypedata.docs) {
+        QuerySnapshot<Map<String, dynamic>> semesterReference =
+            await navigateIntoCollection(material, "semester", "sem$sem");
+        for (var semester in semesterReference.docs) {
+          QuerySnapshot<Map<String, dynamic>> subjectReference =
+              await navigateIntoCollection(semester, aeccOrGE, subjectName);
+          for (var subject in subjectReference.docs) {
+            QuerySnapshot<Map<String, dynamic>> materialReference =
+                await subject.reference.collection("material").get();
+            for (var material in materialReference.docs) {
+              if (material["name"] != "none") {
+                materialList.add(material.data());
+              }
+            }
+          }
+        }
+      }
+    } on FirebaseException catch (e) {
+      print(e.message);
+    }
+    return materialList;
   }
 }

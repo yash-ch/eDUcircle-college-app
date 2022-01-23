@@ -45,6 +45,7 @@ Widget rectangleListViewBuilder(dynamic context, List materialTypeList) {
 Widget roundedRectangleDepartmentWidget(dynamic context, String materialType) {
   double widthOfBox = (widthOrHeightOfDevice(context)["width"] / 2) - 30;
   return InkWell(
+    borderRadius: BorderRadius.all(Radius.circular(20)),
     child: ClipRRect(
       borderRadius: BorderRadius.all(Radius.circular(20)),
       child: Container(
@@ -70,7 +71,7 @@ Widget roundedRectangleDepartmentWidget(dynamic context, String materialType) {
       ),
     ),
     onTap: () {
-      if (subjectList.isNotEmpty) {
+      if (subjectMap["core"].isNotEmpty) {
         Navigator.push(
             context,
             PageRouteBuilder(
@@ -104,7 +105,7 @@ Widget fullWidthListViewBuilder(
       shrinkWrap: true,
       itemCount: namesList.length,
       itemBuilder: (BuildContext context, int index) {
-        print(index);
+        // print(index);
         return Padding(
           padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 10.0),
           child: fullWidthRoundedRectangleWidget(
@@ -121,6 +122,7 @@ Widget fullWidthListViewBuilder(
 Widget fullWidthRoundedRectangleWidget(dynamic context, String title,
     String updatedOn, String link, String materialType, String whichScreen) {
   return InkWell(
+    borderRadius: BorderRadius.all(Radius.circular(20)),
     child: ClipRRect(
       borderRadius: BorderRadius.all(Radius.circular(20)),
       child: Container(
@@ -151,7 +153,10 @@ Widget fullWidthRoundedRectangleWidget(dynamic context, String title,
                     Text(
                       "Updated On : $updatedOn",
                       style: TextStyle(
-                          color: Get.isDarkMode? darkModeLightTextColor : lightModeLightTextColor, fontSize: 12),
+                          color: Get.isDarkMode
+                              ? darkModeLightTextColor
+                              : lightModeLightTextColor,
+                          fontSize: 12),
                     )
                   ],
                 ),
@@ -169,7 +174,10 @@ Widget fullWidthRoundedRectangleWidget(dynamic context, String title,
               PageRouteBuilder(
                   pageBuilder: (BuildContext context, animation1, animation2) {
                     return MaterialScreen(
-                        materialType: materialType, subjectName: title);
+                      materialType: materialType,
+                      subjectName: title,
+                      sujectType: whichScreen.split(" ")[1],
+                    );
                   },
                   transitionsBuilder: transitionEffectForNavigator()));
     },
@@ -179,10 +187,8 @@ Widget fullWidthRoundedRectangleWidget(dynamic context, String title,
 Future<void> launchURL(String url) async {
   if (url != "") {
     if (url.contains("http://") || url.contains("https://")) {
-      print(url);
     } else {
       url = "http://" + url;
-      print(url);
     }
     if (!await launch(
       url,

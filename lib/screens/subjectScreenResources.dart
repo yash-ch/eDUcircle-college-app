@@ -21,7 +21,7 @@ class SubjectScreenResources extends StatefulWidget {
 
 class _SubjectScreenResourcesState extends State<SubjectScreenResources> {
   bool _isUpdatedOnListLoaded = false;
-  List _updatedOnList = [];
+  Map _updatedOnMap = {"core": [], "GE": [], "AECC": []};
 
   @override
   void initState() {
@@ -68,17 +68,35 @@ class _SubjectScreenResourcesState extends State<SubjectScreenResources> {
                       lightTextTitle("Core Subjects"),
                       fullWidthListViewBuilder(
                           context,
-                          subjectList,
-                          _updatedOnList,
-                          subjectList,
+                          subjectMap["core"],
+                          _updatedOnMap["core"],
+                          subjectMap["core"],
                           widget.materialType,
-                          "subject"),
+                          "subject core"),
                       Padding(padding: EdgeInsets.all(5)),
                       lightTextTitle("AECC"),
+                      fullWidthListViewBuilder(
+                          context,
+                          subjectMap["AECC"],
+                          _updatedOnMap["AECC"],
+                          subjectMap["AECC"],
+                          widget.materialType,
+                          "subject AECC"),
                       Padding(padding: EdgeInsets.all(5)),
                       [1, 2, 3, 4].contains(semester)
-                          ? lightTextTitle("Generic Elective")
-                          : Offstage()
+                          ? subjectMap["GE"].isNotEmpty
+                              ? lightTextTitle("Generic Elective")
+                              : Offstage()
+                          : Offstage(),
+                      [1, 2, 3, 4].contains(semester)
+                          ? fullWidthListViewBuilder(
+                              context,
+                              subjectMap["GE"],
+                              _updatedOnMap["GE"],
+                              subjectMap["GE"],
+                              widget.materialType,
+                              "subject GE")
+                          : Offstage(),
                     ],
                   ),
                 ),
@@ -87,7 +105,7 @@ class _SubjectScreenResourcesState extends State<SubjectScreenResources> {
 
   Future<void> _loadData() async {
     try {
-      for (var subject in subjectList) {
+      for (var subject in subjectMap["core"]) {
         List materialData = await FirebaseData()
             .materialData(widget.materialType, subject, semester);
         List _rawListOfUpdatedOn = [];
@@ -96,11 +114,44 @@ class _SubjectScreenResourcesState extends State<SubjectScreenResources> {
         }
         if (_rawListOfUpdatedOn.isNotEmpty) {
           _rawListOfUpdatedOn.sort();
-          _updatedOnList.add(_rawListOfUpdatedOn.last);
+          _updatedOnMap["core"].add(_rawListOfUpdatedOn.last);
         } else {
-          _updatedOnList.add("No Record");
+          _updatedOnMap["core"].add("No Record");
         }
       }
+
+      for (var subject in subjectMap["AECC"]) {
+        List materialData = await FirebaseData()
+            .aeccOrGEData(semester, "AECC", widget.materialType, subject);
+        List _rawListOfUpdatedOn = [];
+        for (var item in materialData) {
+          _rawListOfUpdatedOn.add(item["updatedOn"]);
+        }
+        if (_rawListOfUpdatedOn.isNotEmpty) {
+          _rawListOfUpdatedOn.sort();
+          _updatedOnMap["AECC"].add(_rawListOfUpdatedOn.last);
+        } else {
+          _updatedOnMap["AECC"].add("No Record");
+        }
+      }
+
+      if ([1, 2, 3, 4].contains(semester)) {
+        for (var subject in subjectMap["GE"]) {
+          List materialData = await FirebaseData()
+              .aeccOrGEData(semester, "GE", widget.materialType, subject);
+          List _rawListOfUpdatedOn = [];
+          for (var item in materialData) {
+            _rawListOfUpdatedOn.add(item["updatedOn"]);
+          }
+          if (_rawListOfUpdatedOn.isNotEmpty) {
+            _rawListOfUpdatedOn.sort();
+            _updatedOnMap["GE"].add(_rawListOfUpdatedOn.last);
+          } else {
+            _updatedOnMap["GE"].add("No Record");
+          }
+        }
+      }
+
       setState(() {
         _isUpdatedOnListLoaded = true;
       });

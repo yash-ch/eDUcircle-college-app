@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:get/route_manager.dart';
 
-List subjectList = [];
+Map subjectMap = {"core": [], "GE": [], "AECC": []};
 bool isSubjectListPresent = false;
 
 String courseName = "";
@@ -63,9 +63,13 @@ class _ResourcesState extends State<Resources> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(20.0)),
                             child: InkWell(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
                               onTap: () {
                                 showMaterialRadioPicker(
-                                    headerColor: selectedIconColor,
+                                    headerColor: Get.isDarkMode
+                                        ? Colors.black45
+                                        : selectedIconColor,
                                     title: "Select Course",
                                     context: context,
                                     items: courseList,
@@ -104,9 +108,13 @@ class _ResourcesState extends State<Resources> {
                             padding:
                                 const EdgeInsets.fromLTRB(0.0, 0.0, 16.0, 0.0),
                             child: InkWell(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
                               onTap: () {
                                 showMaterialRadioPicker(
-                                    headerColor: selectedIconColor,
+                                    headerColor: Get.isDarkMode
+                                        ? Colors.black45
+                                        : selectedIconColor,
                                     title: "Select Semester",
                                     context: context,
                                     items: semesterList,
@@ -152,7 +160,12 @@ class _ResourcesState extends State<Resources> {
       courseName = AppState().getCourse();
       semester =
           int.parse(AppState().getSemester().toString().substring(9, 10));
-      subjectList = await FirebaseData().subjectOfCourse(courseName, semester);
+      subjectMap["core"] =
+          await FirebaseData().subjectOfCourse(courseName, semester);
+      subjectMap["AECC"] =
+          await FirebaseData().aeccGESubjects(semester, "AECC", false);
+      subjectMap["GE"] =
+          await FirebaseData().aeccGESubjects(semester, "GE", false);
       setState(() {
         isSubjectListPresent = true;
       });

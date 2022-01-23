@@ -8,9 +8,12 @@ import 'package:get/route_manager.dart';
 class MaterialScreen extends StatefulWidget {
   final String materialType;
   final String subjectName;
-
+  final String sujectType; //core, AECC , GE
   const MaterialScreen(
-      {Key? key, required this.materialType, required this.subjectName})
+      {Key? key,
+      required this.materialType,
+      required this.subjectName,
+      required this.sujectType})
       : super(key: key);
 
   @override
@@ -93,17 +96,46 @@ class _MaterialScreenState extends State<MaterialScreen> {
 
   Future<void> _loadData() async {
     try {
-      List materialData = await FirebaseData()
-          .materialData(widget.materialType, widget.subjectName, semester);
-      for (var item in materialData) {
-        itemsIdList.add(item["id"]);
-        itemsLinkList.add(item["link"]);
-        itemsNameList.add(item["name"]);
-        itemsUpdatedOnList.add(item["updatedOn"]);
+      switch (widget.sujectType) {
+        case "core":
+          List materialData = await FirebaseData()
+              .materialData(widget.materialType, widget.subjectName, semester);
+          for (var item in materialData) {
+            itemsIdList.add(item["id"]);
+            itemsLinkList.add(item["link"]);
+            itemsNameList.add(item["name"]);
+            itemsUpdatedOnList.add(item["updatedOn"]);
+          }
+          setState(() {
+            isMaterialLoad = true;
+          });
+          break;
+        case "AECC":
+          List materialData = await FirebaseData().aeccOrGEData(
+              semester, "AECC", widget.materialType, widget.subjectName);
+          for (var item in materialData) {
+            itemsIdList.add(item["id"]);
+            itemsLinkList.add(item["link"]);
+            itemsNameList.add(item["name"]);
+            itemsUpdatedOnList.add(item["updatedOn"]);
+          }
+          setState(() {
+            isMaterialLoad = true;
+          });
+          break;
+        case "GE":
+          List materialData = await FirebaseData().aeccOrGEData(
+              semester, "GE", widget.materialType, widget.subjectName);
+          for (var item in materialData) {
+            itemsIdList.add(item["id"]);
+            itemsLinkList.add(item["link"]);
+            itemsNameList.add(item["name"]);
+            itemsUpdatedOnList.add(item["updatedOn"]);
+          }
+          setState(() {
+            isMaterialLoad = true;
+          });
       }
-      setState(() {
-        isMaterialLoad = true;
-      });
     } catch (e) {}
   }
 }

@@ -3,10 +3,10 @@ import 'package:educircle/MainLayout.dart';
 import 'package:educircle/utils/listViewBuilders.dart';
 import 'package:educircle/utils/style.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:get/route_manager.dart';
 import 'package:flutter_carousel_slider/carousel_slider.dart';
 import 'package:flutter_carousel_slider/carousel_slider_indicators.dart';
-import 'package:flutter_carousel_slider/carousel_slider_transforms.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -18,9 +18,43 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedEventOrNewsIndex = 0; //0 for Events and 1 for News
 
+  //for hiding events and news bar while scrolling down
+  ScrollController _scrollViewController = ScrollController();
+  bool _showAppbar = true;
+  bool isScrollingDown = false;
+
   @override
   void initState() {
     super.initState();
+
+    //initializing the scroll down controller for the events and news bar
+    _scrollViewController = new ScrollController();
+    _scrollViewController.addListener(() {
+      if (_scrollViewController.position.userScrollDirection ==
+          ScrollDirection.reverse) {
+        if (!isScrollingDown) {
+          isScrollingDown = true;
+          _showAppbar = false;
+          setState(() {});
+        }
+      }
+
+      if (_scrollViewController.position.userScrollDirection ==
+          ScrollDirection.forward) {
+        if (isScrollingDown) {
+          isScrollingDown = false;
+          _showAppbar = true;
+          setState(() {});
+        }
+      }
+    });
+  }
+
+  //disposing the scroll down controller for the events and news bar
+  @override
+  void dispose() {
+    _scrollViewController.dispose(); 
+    super.dispose();
   }
 
   @override
@@ -30,84 +64,90 @@ class _HomePageState extends State<HomePage> {
       children: [
         Container(
           padding: EdgeInsets.only(bottom: 8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                child: Container(
-                  color: _selectedEventOrNewsIndex == 0
-                      ? selectedIconColor
-                      : Get.isDarkMode
-                          ? offBlackColor
-                          : offWhiteColor,
-                  padding: const EdgeInsets.all(2.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
+          child: AnimatedContainer(
+            height: _showAppbar ? 56.0 : 0.0,
+            duration: Duration(milliseconds: 200),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  child: Container(
+                    color: _selectedEventOrNewsIndex == 0
+                        ? selectedIconColor
+                        : Get.isDarkMode
+                            ? offBlackColor
+                            : offWhiteColor,
+                    padding: const EdgeInsets.all(2.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      child: InkWell(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        child: Container(
+                          color: Get.isDarkMode ? offBlackColor : Colors.white,
+                          height: 40.0,
+                          width: (widthOrHeightOfDevice(context)["width"] / 4),
+                          child: Center(
+                              child: Text(
+                            "Events",
+                            style: TextStyle(
+                              color: _selectedEventOrNewsIndex == 0
+                                  ? selectedIconColor
+                                  : Get.isDarkMode
+                                      ? darkModeLightTextColor
+                                      : lightModeLightTextColor,
+                            ),
+                          )),
+                        ),
+                        onTap: () {
+                          setState(() {
+                            _selectedEventOrNewsIndex = 0;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  child: Container(
+                    color: _selectedEventOrNewsIndex == 1
+                        ? selectedIconColor
+                        : Get.isDarkMode
+                            ? offBlackColor
+                            : offWhiteColor,
+                    padding: const EdgeInsets.all(2.0),
                     child: InkWell(
-                      child: Container(
-                        color: Get.isDarkMode ? offBlackColor : Colors.white,
-                        height: 40.0,
-                        width: (widthOrHeightOfDevice(context)["width"] / 4),
-                        child: Center(
-                            child: Text(
-                          "Events",
-                          style: TextStyle(
-                            color: _selectedEventOrNewsIndex == 0
-                                ? selectedIconColor
-                                : Get.isDarkMode
-                                    ? darkModeLightTextColor
-                                    : lightModeLightTextColor,
-                          ),
-                        )),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        child: Container(
+                          color: Get.isDarkMode ? offBlackColor : Colors.white,
+                          height: 40.0,
+                          width: (widthOrHeightOfDevice(context)["width"] / 4),
+                          child: Center(
+                              child: Text(
+                            "News",
+                            style: TextStyle(
+                              color: _selectedEventOrNewsIndex == 1
+                                  ? selectedIconColor
+                                  : Get.isDarkMode
+                                      ? darkModeLightTextColor
+                                      : lightModeLightTextColor,
+                            ),
+                          )),
+                        ),
                       ),
                       onTap: () {
                         setState(() {
-                          _selectedEventOrNewsIndex = 0;
+                          _selectedEventOrNewsIndex = 1;
                         });
                       },
                     ),
                   ),
-                ),
-              ),
-              ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                child: Container(
-                  color: _selectedEventOrNewsIndex == 1
-                      ? selectedIconColor
-                      : Get.isDarkMode
-                          ? offBlackColor
-                          : offWhiteColor,
-                  padding: const EdgeInsets.all(2.0),
-                  child: InkWell(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      child: Container(
-                        color: Get.isDarkMode ? offBlackColor : Colors.white,
-                        height: 40.0,
-                        width: (widthOrHeightOfDevice(context)["width"] / 4),
-                        child: Center(
-                            child: Text(
-                          "News",
-                          style: TextStyle(
-                            color: _selectedEventOrNewsIndex == 1
-                                ? selectedIconColor
-                                : Get.isDarkMode
-                                    ? darkModeLightTextColor
-                                    : lightModeLightTextColor,
-                          ),
-                        )),
-                      ),
-                    ),
-                    onTap: () {
-                      setState(() {
-                        _selectedEventOrNewsIndex = 1;
-                      });
-                    },
-                  ),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         ),
         Expanded(
@@ -118,15 +158,20 @@ class _HomePageState extends State<HomePage> {
 
   Widget eventsTab() {
     return SingleChildScrollView(
+      controller: _scrollViewController,
       physics: ScrollPhysics(),
       child: Container(
         child: Column(
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Padding(
+              padding: EdgeInsets.only(top: 8.0),
+              // child: lightTextTitle("Top Events"),
+            ),
             Center(
               child: Container(
-                margin: EdgeInsets.fromLTRB(0.0, 8.0, 0, 16.0),
+                margin: EdgeInsets.fromLTRB(0.0, 0.0, 0, 16.0),
                 width: widthOrHeightOfDevice(context)["width"] - 22,
                 height: widthOrHeightOfDevice(context)["width"] - 22,
                 child: isTopBannerDataLoaded
@@ -137,7 +182,8 @@ class _HomePageState extends State<HomePage> {
                         autoSliderTransitionTime: Duration(milliseconds: 300),
                         slideBuilder: (index) {
                           return Padding(
-                            padding: const EdgeInsets.all(5.0),
+                            padding:
+                                const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 5.0),
                             child: InkWell(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(20.0)),
@@ -154,6 +200,7 @@ class _HomePageState extends State<HomePage> {
                                     )),
                                     errorWidget: (context, url, error) =>
                                         Icon(Icons.error),
+                                    fit: BoxFit.cover,
                                   ),
                                 ),
                               ),
@@ -181,7 +228,7 @@ class _HomePageState extends State<HomePage> {
                 : Offstage(),
             todaysEventsImageLinks.isNotEmpty
                 ? Container(
-                    margin: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+                    margin: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 20.0),
                     height: 160.0,
                     child: ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(20.0)),
@@ -193,7 +240,7 @@ class _HomePageState extends State<HomePage> {
                 : Offstage(),
             weekEventsImageLinks.isNotEmpty
                 ? Container(
-                    margin: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+                    margin: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 20.0),
                     height: 160.0,
                     child: ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(20.0)),
@@ -218,32 +265,33 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget eventListView(List imageLinkList, List websitesLink) {
+  Widget eventListView(List _imageLinkList, List _websitesLink) {
     return ListView.builder(
-        physics: NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: imageLinkList.length,
+        scrollDirection: Axis.horizontal,
+        itemCount: _imageLinkList.length,
         itemBuilder: (BuildContext context, int index) {
           return Row(
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(20.0)),
                 child: InkWell(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
                   child: Container(
                     width: 160.0,
                     height: 160.0,
                     child: CachedNetworkImage(
-                      imageUrl: imageLinkList[index],
+                      imageUrl: _imageLinkList[index],
                       placeholder: (context, url) => Center(
                           child: CircularProgressIndicator(
                         color: selectedIconColor,
                         strokeWidth: 4.0,
                       )),
                       errorWidget: (context, url, error) => Icon(Icons.error),
+                      fit: BoxFit.cover,
                     ),
                   ),
                   onTap: () {
-                    launchURL(websitesLink[index]);
+                    launchURL(_websitesLink[index]);
                   },
                 ),
               ),

@@ -2,7 +2,6 @@ import 'package:educircle/screens/homePage.dart';
 import 'package:educircle/screens/resourcesPage.dart';
 import 'package:educircle/utils/firebaseData.dart';
 import 'package:educircle/utils/style.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -173,26 +172,27 @@ class _MainLayoutState extends State<MainLayout> {
     List rawTodaysEventsData = await FirebaseData().eventsData("all_events");
 
     for (var item in rawTodaysEventsData) {
-      if (item["date"] == todaysDate) {
+      if (item["event_date"] == todaysDate) {
         todaysEventsImageLinks.add(item["image_link"]);
         todaysEventsWebsiteLinks.add(item["link"]);
       }
-      if (item["date"].toString().split(" ")[1] == todaysDate.split(" ")[1] &&
-          item["date"].toString().split(" ")[2] == todaysDate.split(" ")[2]) {
-        if (int.parse(item["date"].toString().split(" ")[0]) >
+      if (item["event_date"].toString().split(" ")[1] ==
+              todaysDate.split(" ")[1] &&
+          item["event_date"].toString().split(" ")[2] ==
+              todaysDate.split(" ")[2]) {
+        if (int.parse(item["event_date"].toString().split(" ")[0]) >
                 int.parse(todaysDate.split(" ")[0]) &&
-            int.parse(item["date"].toString().split(" ")[0]) <
+            int.parse(item["event_date"].toString().split(" ")[0]) <
                 int.parse(todaysDate.split(" ")[0]) + 7) {
           weekEventsImageLinks.add(item["image_link"]);
           weekEventsWebsiteLinks.add(item["link"]);
-        } else if (int.parse(item["date"].toString().split(" ")[0]) >
+        } else if (int.parse(item["event_date"].toString().split(" ")[0]) >=
             int.parse(todaysDate.split(" ")[0]) + 7) {
           upcomingEventsImageLinks.add(item["image_link"]);
           upcomingEventsWebsiteLinks.add(item["link"]);
         }
       }
     }
-
     setState(() {
       isEventsDataLoaded = true;
     });
