@@ -187,4 +187,33 @@ class FirebaseData {
     }
     return materialList;
   }
+
+  Future<List> newsData(bool initialOrWhole) async {
+    //will load only some news in initial (intial == true)|(whole data == false)
+    List allTheMaterial = [];
+
+    QuerySnapshot<Map<String, dynamic>> eventData = await fireStore
+        .collection('HomePage')
+        .where("name", isEqualTo: "news")
+        .get();
+
+    for (var event in eventData.docs) {
+      if (initialOrWhole) {
+        QuerySnapshot<Map<String, dynamic>> postsReference =
+            await event.reference.collection("Posts").limit(10).get();
+
+        for (var post in postsReference.docs) {
+          allTheMaterial.add(post.data());
+        }
+      } else {
+        QuerySnapshot<Map<String, dynamic>> postsReference =
+            await event.reference.collection("Posts").get();
+
+        for (var post in postsReference.docs) {
+          allTheMaterial.add(post.data());
+        }
+      }
+    }
+    return allTheMaterial;
+  }
 }

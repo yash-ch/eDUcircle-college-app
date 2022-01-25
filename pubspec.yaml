@@ -42,6 +42,7 @@ dependencies:
   url_launcher: ^6.0.10
   cached_network_image: ^3.2.0
   flutter_carousel_slider: ^1.0.8
+  webview_flutter: ^3.0.0
 
 dev_dependencies:
   flutter_test:

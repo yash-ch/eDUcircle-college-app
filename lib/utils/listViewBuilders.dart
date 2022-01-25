@@ -7,6 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/route_manager.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import '../MainLayout.dart';
 
 Widget rectangleListViewBuilder(dynamic context, List materialTypeList) {
@@ -201,6 +202,42 @@ Future<void> launchURL(String url) async {
   } else {
     Fluttertoast.showToast(msg: "Sorry, link is broken.");
   }
+}
+
+Widget webViewURLLauncher(context, String url) {
+  if (url != "") {
+    if (url.contains("http://") || url.contains("https://")) {
+    } else {
+      url = "https://" + url;
+    }
+  }
+  String titleName = url.replaceAll("https://www.", "");
+  titleName = titleName.replaceAll("http://www.", "");
+  titleName = titleName.replaceAll(".com", "");
+  titleName =
+      titleName[0].toUpperCase() + titleName.substring(1, titleName.length);
+
+  return Scaffold(
+      backgroundColor:
+          Get.isDarkMode ? darkBackgroundColor : lightBackgroundColor,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor:
+            Get.isDarkMode ? darkBackgroundColor : lightBackgroundColor,
+        title: Text(
+          titleName,
+          style: Get.isDarkMode ? DarkAppBarTextStyle : LightAppBarTextStyle,
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_new_rounded,
+              color: Get.isDarkMode ? Colors.white : Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+      body: WebView(
+        initialUrl: url,
+        javascriptMode: JavascriptMode.unrestricted,
+      ));
 }
 
 transitionEffectForNavigator() {

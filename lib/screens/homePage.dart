@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage> {
   //disposing the scroll down controller for the events and news bar
   @override
   void dispose() {
-    _scrollViewController.dispose(); 
+    _scrollViewController.dispose();
     super.dispose();
   }
 
@@ -151,7 +151,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         Expanded(
-            child: _selectedEventOrNewsIndex == 0 ? eventsTab() : Offstage()),
+            child: _selectedEventOrNewsIndex == 0 ? eventsTab() : newsTab()),
       ],
     );
   }
@@ -232,7 +232,7 @@ class _HomePageState extends State<HomePage> {
                     height: 160.0,
                     child: ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                        child: eventListView(
+                        child: _eventListView(
                             todaysEventsImageLinks, todaysEventsWebsiteLinks)))
                 : Offstage(),
             weekEventsImageLinks.isNotEmpty
@@ -244,7 +244,7 @@ class _HomePageState extends State<HomePage> {
                     height: 160.0,
                     child: ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                        child: eventListView(
+                        child: _eventListView(
                             weekEventsImageLinks, weekEventsWebsiteLinks)))
                 : Offstage(),
             upcomingEventsImageLinks.isNotEmpty
@@ -256,7 +256,7 @@ class _HomePageState extends State<HomePage> {
                     height: 160.0,
                     child: ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                        child: eventListView(upcomingEventsImageLinks,
+                        child: _eventListView(upcomingEventsImageLinks,
                             upcomingEventsWebsiteLinks)))
                 : Offstage(),
           ],
@@ -265,7 +265,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget eventListView(List _imageLinkList, List _websitesLink) {
+  Widget _eventListView(List _imageLinkList, List _websitesLink) {
     return ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: _imageLinkList.length,
@@ -299,5 +299,103 @@ class _HomePageState extends State<HomePage> {
             ],
           );
         });
+  }
+
+  Widget newsTab() {
+    return SingleChildScrollView(
+        controller: _scrollViewController,
+        physics: ScrollPhysics(),
+        child: newsHeadlines.isNotEmpty
+            ? Container(
+                child: Padding(
+                padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
+                child: _newsTabListView(
+                    newsImageLinks, newsWebsiteLinks, newsHeadlines),
+              ))
+            : Center(
+                child: CircularProgressIndicator(
+                  color: selectedIconColor,
+                  strokeWidth: 4.0,
+                ),
+              ));
+  }
+
+  Widget _newsTabListView(
+      List _imageLinkList, List _websitesLink, List _newsTitleList) {
+    return ListView.builder(
+      // itemCount: _imageLinkList.length,
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: _newsTitleList.length,
+      itemBuilder: (context, index) {
+        return Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            InkWell(
+              borderRadius: BorderRadius.all(Radius.circular(20)),
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                child: Container(
+                  color: Get.isDarkMode ? offBlackColor : offWhiteColor,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                          padding: EdgeInsets.all(10.0),
+                          width: widthOrHeightOfDevice(context)["width"] - 200,
+                          height: 160.0,
+                          child: Align(
+                            alignment:  Alignment.centerLeft,
+                            child: Text(
+                              
+                              _newsTitleList[index],
+                              style: TextStyle(fontSize: SmallTextSize
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: true,
+                              maxLines: 6,
+                            ),
+                          )),
+                      ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        child: Container(
+                          width: 160.0,
+                          height: 160.0,
+                          child: CachedNetworkImage(
+                            imageUrl: _imageLinkList[index],
+                            placeholder: (context, url) => Center(
+                                child: CircularProgressIndicator(
+                              color: selectedIconColor,
+                              strokeWidth: 4.0,
+                            )),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              onTap: () {
+                try {
+                  Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                          pageBuilder:
+                              (BuildContext context, animation1, animation2) {
+                            return webViewURLLauncher(
+                                context, _websitesLink[index]);
+                          },
+                          transitionsBuilder: transitionEffectForNavigator()));
+                } catch (e) {}
+              },
+            ),
+            Padding(padding: EdgeInsets.only(bottom: 16.0)),
+          ],
+        );
+      },
+    );
   }
 }

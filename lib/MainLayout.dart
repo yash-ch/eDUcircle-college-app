@@ -26,14 +26,22 @@ List topBannerWebsiteLinks = [];
 bool isTopBannerDataLoaded = false;
 bool isEventsDataLoaded = false;
 
+//for HomePage images links
 List todaysEventsImageLinks = [];
 List todaysEventsWebsiteLinks = [];
 
+//for HomePage images links
 List weekEventsImageLinks = [];
 List weekEventsWebsiteLinks = [];
 
+//for HomePage images links
 List upcomingEventsImageLinks = [];
 List upcomingEventsWebsiteLinks = [];
+
+//for news tab
+List newsImageLinks = [];
+List newsHeadlines = [];
+List newsWebsiteLinks = [];
 
 class _MainLayoutState extends State<MainLayout> {
   int _selectedTabIndex = 0;
@@ -42,6 +50,7 @@ class _MainLayoutState extends State<MainLayout> {
   void initState() {
     svgLinkDic();
     loadingEvents();
+    loadingNews();
     super.initState();
   }
 
@@ -195,6 +204,34 @@ class _MainLayoutState extends State<MainLayout> {
     }
     setState(() {
       isEventsDataLoaded = true;
+    });
+  }
+
+  Future<void> loadingNews() async {
+    List rawNewsData = await FirebaseData().newsData(true);
+
+    for (var item in rawNewsData) {
+      newsImageLinks.add(item["image_link"]);
+      newsWebsiteLinks.add(item["link"]);
+      newsHeadlines.add(item["name"]);
+    }
+    setState(() {});
+
+    //for downloading whole data
+    List rawAllNewsData = await FirebaseData().newsData(true);
+    List tempNewsHeadlines = [];
+    List tempNewsImageLinks = [];
+    List tempNewsWebsiteLinks = [];
+
+    for (var item in rawAllNewsData) {
+      tempNewsImageLinks.add(item["image_link"]);
+      tempNewsWebsiteLinks.add(item["link"]);
+      tempNewsHeadlines.add(item["name"]);
+    }
+    setState(() {
+      newsHeadlines = tempNewsHeadlines;
+      newsImageLinks = tempNewsImageLinks;
+      newsWebsiteLinks = tempNewsWebsiteLinks;
     });
   }
 }
