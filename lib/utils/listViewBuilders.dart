@@ -1,5 +1,6 @@
 import 'package:educircle/screens/materialScreenResources.dart';
 import 'package:educircle/screens/resourcesPage.dart';
+import 'package:educircle/screens/shimmerWidget.dart';
 import 'package:educircle/screens/subjectScreenResources.dart';
 import 'package:educircle/utils/style.dart';
 import 'package:flutter/material.dart';
@@ -64,6 +65,8 @@ Widget roundedRectangleDepartmentWidget(dynamic context, String materialType) {
                 color: selectedIconColor,
                 width: 35,
                 height: 35,
+                placeholderBuilder: (context) => ShimmerSkeleton(
+                    height: 35, width: 35, margin: EdgeInsets.all(0)),
               )),
               SizedBox(width: widthOfBox / 1.8, child: Text(materialType)),
             ],

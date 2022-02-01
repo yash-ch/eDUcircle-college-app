@@ -59,16 +59,16 @@ class Style {
         accentColor: selectedIconColor,
         brightness: Brightness.light,
         appBarTheme: AppBarTheme(
-          backgroundColor: lightBackgroundColor,
-        ),
+            backgroundColor: lightBackgroundColor,
+            iconTheme: IconThemeData(color: Colors.black, size: 30.0)),
       );
 
   static ThemeData get myDarkTheme => ThemeData(
       accentColor: selectedIconColor,
       brightness: Brightness.dark,
       appBarTheme: AppBarTheme(
-        backgroundColor: darkBackgroundColor,
-      ));
+          backgroundColor: darkBackgroundColor,
+          iconTheme: IconThemeData(color: Colors.white, size: 30.0)));
 }
 
 Map widthOrHeightOfDevice(context) {

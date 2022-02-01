@@ -27,6 +27,13 @@ class FirebaseData {
     return link;
   }
 
+  Future<String> imageURL(String location, String imageName) async {
+    String link = "";
+    // print(imageName);
+    link = await ref.child('images/$location/$imageName').getDownloadURL();
+    return link;
+  }
+
   Future<List> materialType() async {
     List materialTypeList = [];
     QuerySnapshot<Map<String, dynamic>> data =
@@ -214,6 +221,16 @@ class FirebaseData {
         }
       }
     }
+    return allTheMaterial;
+  }
+
+  Future<Map> otherData(String id) async {
+    Map allTheMaterial = {};
+
+    DocumentSnapshot<Map<String, dynamic>> otherData = await fireStore
+        .collection('OtherData').doc(id).get();
+        
+    allTheMaterial = otherData.data()!;
     return allTheMaterial;
   }
 }

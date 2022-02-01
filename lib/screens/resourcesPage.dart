@@ -1,4 +1,5 @@
 import 'package:educircle/MainLayout.dart';
+import 'package:educircle/screens/shimmerWidget.dart';
 import 'package:educircle/utils/appState.dart';
 import 'package:educircle/utils/firebaseData.dart';
 import 'package:educircle/utils/listViewBuilders.dart';
@@ -40,11 +41,7 @@ class _ResourcesState extends State<Resources> {
   Widget build(BuildContext context) {
     double widthOfDevice = widthOrHeightOfDevice(context)["width"];
     return isLoading
-        ? Center(
-            child: CircularProgressIndicator(
-            color: selectedIconColor,
-            strokeWidth: 4.0,
-          ))
+        ? shimmerForMaterials()
         : SingleChildScrollView(
             physics: ScrollPhysics(),
             child: Container(
@@ -170,5 +167,81 @@ class _ResourcesState extends State<Resources> {
         isSubjectListPresent = true;
       });
     } catch (e) {}
+  }
+
+  Widget shimmerForMaterials() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ShimmerSkeleton(
+          margin: EdgeInsets.fromLTRB(16.0, 0.0, 0.0, 16.0),
+          width: 120,
+          height: 30,
+        ),
+        Row(
+          children: [
+            Flexible(
+              flex: 3,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16.0, 0.0, 5.0, 0.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  child: ShimmerSkeleton(
+                      height: 45,
+                      width: widthOrHeightOfDevice(context)["width"] - 50,
+                      margin: EdgeInsets.all(0)),
+                ),
+              ),
+            ),
+            Flexible(
+              flex: 1,
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(0.0, 0.0, 16.0, 0.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  child: ShimmerSkeleton(
+                      height: 45,
+                      width: double.maxFinite,
+                      margin: EdgeInsets.all(0)),
+                ),
+              ),
+            )
+          ],
+        ),
+        Padding(padding: EdgeInsets.all(8.0)),
+        ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: 3,
+            itemBuilder: (BuildContext context, int index) {
+              return Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ShimmerSkeleton(
+                          height: 100.0,
+                          width: (widthOrHeightOfDevice(context)["width"] / 2) -
+                              30,
+                          margin: EdgeInsets.all(0.0)),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      ShimmerSkeleton(
+                          height: 100.0,
+                          width: (widthOrHeightOfDevice(context)["width"] / 2) -
+                              30,
+                          margin: EdgeInsets.all(0.0)),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  )
+                ],
+              );
+            })
+      ],
+    );
   }
 }

@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:educircle/MainLayout.dart';
+import 'package:educircle/screens/shimmerWidget.dart';
+import 'package:educircle/utils/firebaseData.dart';
 import 'package:educircle/utils/listViewBuilders.dart';
 import 'package:educircle/utils/style.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +27,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    isEventsDataLoaded = false;
+    FirebaseData().otherData("about");
     super.initState();
 
     //initializing the scroll down controller for the events and news bar
@@ -171,94 +175,83 @@ class _HomePageState extends State<HomePage> {
             ),
             Center(
               child: Container(
-                margin: EdgeInsets.fromLTRB(0.0, 0.0, 0, 16.0),
-                width: widthOrHeightOfDevice(context)["width"] - 22,
-                height: widthOrHeightOfDevice(context)["width"] - 22,
-                child: isTopBannerDataLoaded
-                    ? CarouselSlider.builder(
-                        unlimitedMode: true,
-                        enableAutoSlider: true,
-                        autoSliderDelay: Duration(seconds: 10),
-                        autoSliderTransitionTime: Duration(milliseconds: 300),
-                        slideBuilder: (index) {
-                          return Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 5.0),
-                            child: InkWell(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20.0)),
-                              child: ClipRRect(
+                  margin: EdgeInsets.fromLTRB(0.0, 0.0, 0, 16.0),
+                  width: widthOrHeightOfDevice(context)["width"] - 22,
+                  height: widthOrHeightOfDevice(context)["width"] - 22,
+                  child: isTopBannerDataLoaded
+                      ? CarouselSlider.builder(
+                          unlimitedMode: true,
+                          enableAutoSlider: true,
+                          autoSliderDelay: Duration(seconds: 10),
+                          autoSliderTransitionTime: Duration(milliseconds: 300),
+                          slideBuilder: (index) {
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 5.0),
+                              child: InkWell(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(20.0)),
-                                child: Container(
-                                  child: CachedNetworkImage(
-                                    imageUrl: topBannerImageLinks[index],
-                                    placeholder: (context, url) => Center(
-                                        child: CircularProgressIndicator(
-                                      color: selectedIconColor,
-                                      strokeWidth: 4.0,
-                                    )),
-                                    errorWidget: (context, url, error) =>
-                                        Icon(Icons.error),
-                                    fit: BoxFit.cover,
+                                child: ClipRRect(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20.0)),
+                                  child: Container(
+                                    child: CachedNetworkImage(
+                                      imageUrl: topBannerImageLinks[index],
+                                      placeholder: (context, url) =>
+                                          ShimmerSkeleton(
+                                        margin: EdgeInsets.fromLTRB(
+                                            0.0, 0.0, 0.0, 0.0),
+                                        width: widthOrHeightOfDevice(
+                                                context)["width"] -
+                                            22,
+                                        height: widthOrHeightOfDevice(
+                                                context)["width"] -
+                                            22,
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          Icon(Icons.error),
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
+                                onTap: () {
+                                  launchURL(topBannerWebsiteLinks[index]);
+                                },
                               ),
-                              onTap: () {
-                                launchURL(topBannerWebsiteLinks[index]);
-                              },
-                            ),
-                          );
-                        },
-                        slideIndicator: CircularSlideIndicator(
-                          currentIndicatorColor: selectedIconColor,
-                          indicatorBackgroundColor: Colors.white60,
-                          padding: EdgeInsets.only(bottom: 32),
-                        ),
-                        itemCount: topBannerImageLinks.length)
-                    : Center(
-                        child: CircularProgressIndicator(
-                        color: selectedIconColor,
-                        strokeWidth: 4.0,
-                      )),
-              ),
+                            );
+                          },
+                          slideIndicator: CircularSlideIndicator(
+                            currentIndicatorColor: selectedIconColor,
+                            indicatorBackgroundColor: Colors.white60,
+                            padding: EdgeInsets.only(bottom: 32),
+                          ),
+                          itemCount: topBannerImageLinks.length)
+                      : ShimmerSkeleton(
+                          margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
+                          width: widthOrHeightOfDevice(context)["width"] - 22,
+                          height: widthOrHeightOfDevice(context)["width"] - 22,
+                        )),
             ),
             todaysEventsImageLinks.isNotEmpty
                 ? lightTextTitle("Today's Events")
-                : Offstage(),
+                : eventTextShimmer(),
             todaysEventsImageLinks.isNotEmpty
-                ? Container(
-                    margin: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 20.0),
-                    height: 160.0,
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                        child: _eventListView(
-                            todaysEventsImageLinks, todaysEventsWebsiteLinks)))
-                : Offstage(),
+                ? _eventListView(
+                    todaysEventsImageLinks, todaysEventsWebsiteLinks)
+                : eventTabShimmer(),
             weekEventsImageLinks.isNotEmpty
                 ? lightTextTitle("This Week's Events")
-                : Offstage(),
+                : eventTextShimmer(),
             weekEventsImageLinks.isNotEmpty
-                ? Container(
-                    margin: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 20.0),
-                    height: 160.0,
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                        child: _eventListView(
-                            weekEventsImageLinks, weekEventsWebsiteLinks)))
-                : Offstage(),
+                ? _eventListView(weekEventsImageLinks, weekEventsWebsiteLinks)
+                : eventTabShimmer(),
             upcomingEventsImageLinks.isNotEmpty
                 ? lightTextTitle("Upcoming Events")
-                : Offstage(),
+                : eventTextShimmer(),
             upcomingEventsImageLinks.isNotEmpty
-                ? Container(
-                    margin: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-                    height: 160.0,
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                        child: _eventListView(upcomingEventsImageLinks,
-                            upcomingEventsWebsiteLinks)))
-                : Offstage(),
+                ? _eventListView(
+                    upcomingEventsImageLinks, upcomingEventsWebsiteLinks)
+                : eventTabShimmer(),
           ],
         ),
       ),
@@ -266,39 +259,45 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _eventListView(List _imageLinkList, List _websitesLink) {
-    return ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: _imageLinkList.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Row(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                child: InkWell(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                  child: Container(
-                    width: 160.0,
-                    height: 160.0,
-                    child: CachedNetworkImage(
-                      imageUrl: _imageLinkList[index],
-                      placeholder: (context, url) => Center(
-                          child: CircularProgressIndicator(
-                        color: selectedIconColor,
-                        strokeWidth: 4.0,
-                      )),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  onTap: () {
-                    launchURL(_websitesLink[index]);
-                  },
-                ),
-              ),
-              Padding(padding: EdgeInsets.only(right: 10.0)),
-            ],
-          );
-        });
+    return Container(
+        margin: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 20.0),
+        height: 160.0,
+        child: ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(20.0)),
+            child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: _imageLinkList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Row(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        child: InkWell(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          child: Container(
+                            width: 160.0,
+                            height: 160.0,
+                            child: CachedNetworkImage(
+                              imageUrl: _imageLinkList[index],
+                              placeholder: (context, url) => ShimmerSkeleton(
+                                height: 160,
+                                width: 160,
+                                margin: EdgeInsets.only(right: 0.0),
+                              ),
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          onTap: () {
+                            launchURL(_websitesLink[index]);
+                          },
+                        ),
+                      ),
+                      Padding(padding: EdgeInsets.only(right: 10.0)),
+                    ],
+                  );
+                })));
   }
 
   Widget newsTab() {
@@ -306,96 +305,161 @@ class _HomePageState extends State<HomePage> {
         controller: _scrollViewController,
         physics: ScrollPhysics(),
         child: newsHeadlines.isNotEmpty
-            ? Container(
+            ? _newsTabListView(newsImageLinks, newsWebsiteLinks, newsHeadlines,
+                newsPublishDate)
+            : Container(
                 child: Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
-                child: _newsTabListView(
-                    newsImageLinks, newsWebsiteLinks, newsHeadlines),
-              ))
-            : Center(
-                child: CircularProgressIndicator(
-                  color: selectedIconColor,
-                  strokeWidth: 4.0,
-                ),
-              ));
+                    padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
+                    child: ListView.builder(
+                        // itemCount: _imageLinkList.length,
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: 7,
+                        itemBuilder: (context, index) {
+                          return ShimmerSkeleton(
+                            height: 160.0,
+                            width: widthOrHeightOfDevice(context)["width"] - 32,
+                            margin: EdgeInsets.only(bottom: 16.0),
+                          );
+                        }))));
   }
 
-  Widget _newsTabListView(
-      List _imageLinkList, List _websitesLink, List _newsTitleList) {
-    return ListView.builder(
-      // itemCount: _imageLinkList.length,
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: _newsTitleList.length,
-      itemBuilder: (context, index) {
-        return Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            InkWell(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-              child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                child: Container(
-                  color: Get.isDarkMode ? offBlackColor : offWhiteColor,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                          padding: EdgeInsets.all(10.0),
-                          width: widthOrHeightOfDevice(context)["width"] - 200,
-                          height: 160.0,
-                          child: Align(
-                            alignment:  Alignment.centerLeft,
-                            child: Text(
-                              
-                              _newsTitleList[index],
-                              style: TextStyle(fontSize: SmallTextSize
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                              softWrap: true,
-                              maxLines: 6,
-                            ),
-                          )),
-                      ClipRRect(
+  Widget _newsTabListView(List _imageLinkList, List _websitesLink,
+      List _newsTitleList, _newPublishDateList) {
+    return Container(
+        child: Padding(
+            padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
+            child: ListView.builder(
+              // itemCount: _imageLinkList.length,
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: _newsTitleList.length,
+              itemBuilder: (context, index) {
+                return Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    InkWell(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      child: ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(20.0)),
                         child: Container(
-                          width: 160.0,
-                          height: 160.0,
-                          child: CachedNetworkImage(
-                            imageUrl: _imageLinkList[index],
-                            placeholder: (context, url) => Center(
-                                child: CircularProgressIndicator(
-                              color: selectedIconColor,
-                              strokeWidth: 4.0,
-                            )),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
-                            fit: BoxFit.cover,
+                          color: Get.isDarkMode ? offBlackColor : offWhiteColor,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                      padding: EdgeInsets.fromLTRB(
+                                          16.0, 16.0, 10, 10.0),
+                                      width: widthOrHeightOfDevice(
+                                              context)["width"] -
+                                          200,
+                                      height: 135.0,
+                                      child: Text(
+                                        _newsTitleList[index],
+                                        style:
+                                            TextStyle(fontSize: SmallTextSize),
+                                        overflow: TextOverflow.ellipsis,
+                                        softWrap: true,
+                                        maxLines: 5,
+                                      )),
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        16.0, 0.0, 0.0, 16.0),
+                                    child: Text(
+                                      "Publish Date : " +
+                                          _newPublishDateList[index]
+                                              .toString()
+                                              .replaceAll(" ", "/"),
+                                      style: TextStyle(
+                                          fontSize: 12.0,
+                                          color: Get.isDarkMode
+                                              ? darkModeLightTextColor
+                                              : lightModeLightTextColor),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    0.0, 16.0, 16.0, 16.0),
+                                child: ClipRRect(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20.0)),
+                                  child: Container(
+                                    width: 130.0,
+                                    height: 130.0,
+                                    child: CachedNetworkImage(
+                                      imageUrl: _imageLinkList[index],
+                                      placeholder: (context, url) =>
+                                          ShimmerSkeleton(
+                                        height: 130.0,
+                                        width: 130,
+                                        margin: EdgeInsets.only(bottom: 0.0),
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          Icon(Icons.error),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-              onTap: () {
-                try {
-                  Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                          pageBuilder:
-                              (BuildContext context, animation1, animation2) {
-                            return webViewURLLauncher(
-                                context, _websitesLink[index]);
-                          },
-                          transitionsBuilder: transitionEffectForNavigator()));
-                } catch (e) {}
+                      onTap: () {
+                        try {
+                          Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                  pageBuilder: (BuildContext context,
+                                      animation1, animation2) {
+                                    return webViewURLLauncher(
+                                        context, _websitesLink[index]);
+                                  },
+                                  transitionsBuilder:
+                                      transitionEffectForNavigator()));
+                        } catch (e) {}
+                      },
+                    ),
+                    Padding(padding: EdgeInsets.only(bottom: 16.0)),
+                  ],
+                );
               },
-            ),
-            Padding(padding: EdgeInsets.only(bottom: 16.0)),
-          ],
-        );
-      },
-    );
+            )));
+  }
+
+  Widget eventTextShimmer() {
+    return !isEventsDataLoaded
+        ? ShimmerSkeleton(
+            margin: EdgeInsets.fromLTRB(16.0, 0.0, 0.0, 16.0),
+            width: 160,
+            height: 40,
+          )
+        : Offstage();
+  }
+
+  Widget eventTabShimmer() {
+    return !isEventsDataLoaded
+        ? Container(
+            margin: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 20.0),
+            height: 160.0,
+            child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 5,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ShimmerSkeleton(
+                        height: 160,
+                        width: 160,
+                        margin: EdgeInsets.only(right: 10.0),
+                      );
+                    })))
+        : Offstage();
   }
 }

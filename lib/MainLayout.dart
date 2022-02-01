@@ -1,11 +1,14 @@
+import 'package:educircle/screens/clubsPage.dart';
 import 'package:educircle/screens/homePage.dart';
+import 'package:educircle/screens/navDrawer.dart';
 import 'package:educircle/screens/resourcesPage.dart';
 import 'package:educircle/utils/firebaseData.dart';
+import 'package:educircle/utils/listViewBuilders.dart';
 import 'package:educircle/utils/style.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/cupertino.dart';
 
 class MainLayout extends StatefulWidget {
   const MainLayout({Key? key}) : super(key: key);
@@ -42,6 +45,10 @@ List upcomingEventsWebsiteLinks = [];
 List newsImageLinks = [];
 List newsHeadlines = [];
 List newsWebsiteLinks = [];
+List newsPublishDate = [];
+
+//for share dialog
+String sharingText = "";
 
 class _MainLayoutState extends State<MainLayout> {
   int _selectedTabIndex = 0;
@@ -63,22 +70,12 @@ class _MainLayoutState extends State<MainLayout> {
       case 0:
         {
           _tab = HomePage();
-          _topButtons = <Widget>[
-            IconButton(
-              padding: EdgeInsets.fromLTRB(8.0, 8.0, 16.0, 8.0),
-              onPressed: _onPressedAppBarHome,
-              icon: Icon(Icons.menu_rounded),
-              iconSize: 30.0,
-            ),
-          ];
+          
         }
         break;
       case 1:
         {
-          Fluttertoast.showToast(
-              msg:
-                  "Under development, will be released soon. If you want to help in development then contact the team (contacts in app info).",
-              toastLength: Toast.LENGTH_LONG);
+          _tab = ClubsPage();
         }
         break;
       case 2:
@@ -108,6 +105,7 @@ class _MainLayoutState extends State<MainLayout> {
         selectedItemColor: selectedIconColor,
         onTap: _onBottomTabTapped,
       ),
+      drawer: NavDrawer(),
     );
   }
 
@@ -117,8 +115,7 @@ class _MainLayoutState extends State<MainLayout> {
       style: Get.isDarkMode ? DarkAppBarTextStyle : LightAppBarTextStyle,
     ),
     Text(
-      // "Clubs",
-      "Resources",
+      "Clubs",
       style: Get.isDarkMode ? DarkAppBarTextStyle : LightAppBarTextStyle,
     ),
     Text(
@@ -161,8 +158,6 @@ class _MainLayoutState extends State<MainLayout> {
       });
     } catch (e) {}
   }
-
-  void _onPressedAppBarHome() {}
 
   Future<void> loadingEvents() async {
     List rawTopBannerData = await FirebaseData().eventsData("top_banners");
@@ -214,6 +209,7 @@ class _MainLayoutState extends State<MainLayout> {
       newsImageLinks.add(item["image_link"]);
       newsWebsiteLinks.add(item["link"]);
       newsHeadlines.add(item["name"]);
+      newsPublishDate.add(item["publish_date"]);
     }
     setState(() {});
 
@@ -222,16 +218,19 @@ class _MainLayoutState extends State<MainLayout> {
     List tempNewsHeadlines = [];
     List tempNewsImageLinks = [];
     List tempNewsWebsiteLinks = [];
+    List tempNewsPublishDate = [];
 
     for (var item in rawAllNewsData) {
       tempNewsImageLinks.add(item["image_link"]);
       tempNewsWebsiteLinks.add(item["link"]);
       tempNewsHeadlines.add(item["name"]);
+      tempNewsPublishDate.add(item["publish_date"]);
     }
     setState(() {
       newsHeadlines = tempNewsHeadlines;
       newsImageLinks = tempNewsImageLinks;
       newsWebsiteLinks = tempNewsWebsiteLinks;
+      newsPublishDate = tempNewsPublishDate;
     });
   }
 }
