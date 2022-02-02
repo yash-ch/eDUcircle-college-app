@@ -23,7 +23,7 @@ class _ClubsPageState extends State<ClubsPage> {
                 imageUrl:
                     "https://firebasestorage.googleapis.com/v0/b/educircle-dduc.appspot.com/o/images%2Fother%2Funderdevelopment.png?alt=media&token=907c207d-b71d-4266-b58b-24c428a191dd",
                 placeholder: (context, url) => ShimmerSkeleton(
-                    height: 270, width: double.maxFinite, margin: EdgeInsets.symmetric(horizontal: 50.0)),
+                    height: 280, width: double.maxFinite, margin: EdgeInsets.symmetric(horizontal: 50.0)),
                 errorWidget: (context, url, error) => Icon(Icons.error),
                 fit: BoxFit.cover,
               ),

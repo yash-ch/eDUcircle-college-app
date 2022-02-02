@@ -3,12 +3,10 @@ import 'package:educircle/screens/homePage.dart';
 import 'package:educircle/screens/navDrawer.dart';
 import 'package:educircle/screens/resourcesPage.dart';
 import 'package:educircle/utils/firebaseData.dart';
-import 'package:educircle/utils/listViewBuilders.dart';
 import 'package:educircle/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter/cupertino.dart';
 
 class MainLayout extends StatefulWidget {
   const MainLayout({Key? key}) : super(key: key);
@@ -111,7 +109,7 @@ class _MainLayoutState extends State<MainLayout> {
 
   List<Widget> _topBarName = <Widget>[
     Text(
-      "eDUcircle",
+      "Duline",
       style: Get.isDarkMode ? DarkAppBarTextStyle : LightAppBarTextStyle,
     ),
     Text(

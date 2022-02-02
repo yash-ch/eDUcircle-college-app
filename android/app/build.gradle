@@ -35,8 +35,8 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.goappic.webview_in_flutter"
-        applicationId "com.goappic.educircle"
+        applicationId "com.goappic.duline"
+        applicationId "com.goappic.duline"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()

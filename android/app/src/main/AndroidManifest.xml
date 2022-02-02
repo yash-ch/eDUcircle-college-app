@@ -8,7 +8,7 @@
       </intent>
     </queries>
    <application
-        android:label="educircle"
+        android:label="Duline"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
