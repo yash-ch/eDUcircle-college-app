@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:educircle/utils/style.dart';
+import 'package:duline/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:share_plus/share_plus.dart';

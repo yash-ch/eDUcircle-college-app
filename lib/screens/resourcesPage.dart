@@ -1,9 +1,9 @@
-import 'package:educircle/MainLayout.dart';
-import 'package:educircle/screens/shimmerWidget.dart';
-import 'package:educircle/utils/appState.dart';
-import 'package:educircle/utils/firebaseData.dart';
-import 'package:educircle/utils/listViewBuilders.dart';
-import 'package:educircle/utils/style.dart';
+import 'package:duline/MainLayout.dart';
+import 'package:duline/screens/shimmerWidget.dart';
+import 'package:duline/utils/appState.dart';
+import 'package:duline/utils/firebaseData.dart';
+import 'package:duline/utils/listViewBuilders.dart';
+import 'package:duline/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:get/route_manager.dart';

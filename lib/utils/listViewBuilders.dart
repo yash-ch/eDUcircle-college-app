@@ -1,8 +1,8 @@
-import 'package:educircle/screens/materialScreenResources.dart';
-import 'package:educircle/screens/resourcesPage.dart';
-import 'package:educircle/screens/shimmerWidget.dart';
-import 'package:educircle/screens/subjectScreenResources.dart';
-import 'package:educircle/utils/style.dart';
+import 'package:duline/screens/materialScreenResources.dart';
+import 'package:duline/screens/resourcesPage.dart';
+import 'package:duline/screens/shimmerWidget.dart';
+import 'package:duline/screens/subjectScreenResources.dart';
+import 'package:duline/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';

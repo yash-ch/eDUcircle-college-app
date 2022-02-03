@@ -1,7 +1,7 @@
-import 'package:educircle/screens/resourcesPage.dart';
-import 'package:educircle/utils/firebaseData.dart';
-import 'package:educircle/utils/listViewBuilders.dart';
-import 'package:educircle/utils/style.dart';
+import 'package:duline/screens/resourcesPage.dart';
+import 'package:duline/utils/firebaseData.dart';
+import 'package:duline/utils/listViewBuilders.dart';
+import 'package:duline/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 

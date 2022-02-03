@@ -1,9 +1,9 @@
-import 'package:educircle/screens/clubsPage.dart';
-import 'package:educircle/screens/homePage.dart';
-import 'package:educircle/screens/navDrawer.dart';
-import 'package:educircle/screens/resourcesPage.dart';
-import 'package:educircle/utils/firebaseData.dart';
-import 'package:educircle/utils/style.dart';
+import 'package:duline/screens/clubsPage.dart';
+import 'package:duline/screens/homePage.dart';
+import 'package:duline/screens/navDrawer.dart';
+import 'package:duline/screens/resourcesPage.dart';
+import 'package:duline/utils/firebaseData.dart';
+import 'package:duline/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';

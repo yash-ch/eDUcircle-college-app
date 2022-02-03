@@ -1,4 +1,4 @@
-import 'package:educircle/utils/style.dart';
+import 'package:duline/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:shimmer/shimmer.dart';

@@ -1,6 +1,6 @@
-import 'package:educircle/MainLayout.dart';
-import 'package:educircle/utils/appState.dart';
-import 'package:educircle/utils/style.dart';
+import 'package:duline/MainLayout.dart';
+import 'package:duline/utils/appState.dart';
+import 'package:duline/utils/style.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
