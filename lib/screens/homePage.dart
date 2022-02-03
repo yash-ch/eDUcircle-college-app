@@ -27,7 +27,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    isEventsDataLoaded = false;
     FirebaseData().otherData("about");
     super.initState();
 
@@ -199,6 +198,7 @@ class _HomePageState extends State<HomePage> {
                                       imageUrl: topBannerImageLinks[index],
                                       placeholder: (context, url) =>
                                           ShimmerSkeleton(
+                                        cornerRadius: 20.0,
                                         margin: EdgeInsets.fromLTRB(
                                             0.0, 0.0, 0.0, 0.0),
                                         width: widthOrHeightOfDevice(
@@ -227,6 +227,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                           itemCount: topBannerImageLinks.length)
                       : ShimmerSkeleton(
+                          cornerRadius: 20.0,
                           margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
                           width: widthOrHeightOfDevice(context)["width"] - 22,
                           height: widthOrHeightOfDevice(context)["width"] - 22,
@@ -280,6 +281,7 @@ class _HomePageState extends State<HomePage> {
                             child: CachedNetworkImage(
                               imageUrl: _imageLinkList[index],
                               placeholder: (context, url) => ShimmerSkeleton(
+                                cornerRadius: 20.0,
                                 height: 160,
                                 width: 160,
                                 margin: EdgeInsets.only(right: 0.0),
@@ -317,6 +319,7 @@ class _HomePageState extends State<HomePage> {
                         itemCount: 7,
                         itemBuilder: (context, index) {
                           return ShimmerSkeleton(
+                            cornerRadius: 20.0,
                             height: 160.0,
                             width: widthOrHeightOfDevice(context)["width"] - 32,
                             margin: EdgeInsets.only(bottom: 16.0),
@@ -396,6 +399,7 @@ class _HomePageState extends State<HomePage> {
                                       imageUrl: _imageLinkList[index],
                                       placeholder: (context, url) =>
                                           ShimmerSkeleton(
+                                        cornerRadius: 20.0,
                                         height: 130.0,
                                         width: 130,
                                         margin: EdgeInsets.only(bottom: 0.0),
@@ -431,35 +435,5 @@ class _HomePageState extends State<HomePage> {
                 );
               },
             )));
-  }
-
-  Widget eventTextShimmer() {
-    return !isEventsDataLoaded
-        ? ShimmerSkeleton(
-            margin: EdgeInsets.fromLTRB(16.0, 0.0, 0.0, 16.0),
-            width: 160,
-            height: 40,
-          )
-        : Offstage();
-  }
-
-  Widget eventTabShimmer() {
-    return !isEventsDataLoaded
-        ? Container(
-            margin: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 20.0),
-            height: 160.0,
-            child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 5,
-                    itemBuilder: (BuildContext context, int index) {
-                      return ShimmerSkeleton(
-                        height: 160,
-                        width: 160,
-                        margin: EdgeInsets.only(right: 10.0),
-                      );
-                    })))
-        : Offstage();
   }
 }

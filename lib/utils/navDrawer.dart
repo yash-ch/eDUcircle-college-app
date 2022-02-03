@@ -1,8 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:duline/MainLayout.dart';
+import 'package:duline/screens/navScreens.dart';
 import 'package:duline/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:share_plus/share_plus.dart';
+
+import 'listViewBuilders.dart';
 
 class NavDrawer extends StatelessWidget {
   @override
@@ -15,9 +19,8 @@ class NavDrawer extends StatelessWidget {
           padding: EdgeInsets.zero,
           children: [
             UserAccountsDrawerHeader(
-              
-              accountName: Text('eDUcircle'),
-              accountEmail: Text('educircleteam@gmail.com'),
+              accountName: Text('Duline'),
+              accountEmail: Text('dulineapp@gmail.com'),
               currentAccountPicture: CircleAvatar(
                 child: ClipOval(
                   child: CachedNetworkImage(
@@ -30,25 +33,36 @@ class NavDrawer extends StatelessWidget {
                 ),
               ),
               decoration: BoxDecoration(
-                color: Get.isDarkMode? Colors.black45 : selectedIconColor
-              ),
+                  color: Get.isDarkMode ? Colors.black45 : selectedIconColor),
             ),
             ListTile(
               leading: Icon(Icons.share),
               title: Text('Share'),
               onTap: () {
-                Share.share("hey, share this app.");
+                Share.share(sharingText);
               },
             ),
             ListTile(
               leading: Icon(Icons.edit),
-              title: Text('Suggestions'),
+              title: Text('Contact'),
+              onTap: () {
+                launchURL(contactFormUrl);
+              },
             ),
             Divider(),
             ListTile(
               leading: Icon(Icons.description),
               title: Text('About'),
-              onTap: () => null,
+              onTap: () {
+                Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                        pageBuilder:
+                            (BuildContext context, animation1, animation2) {
+                          return NavScreen(screenName: "About");
+                        },
+                        transitionsBuilder: transitionEffectForNavigator()));
+              },
             ),
             Divider(),
             ListTile(

@@ -66,7 +66,10 @@ Widget roundedRectangleDepartmentWidget(dynamic context, String materialType) {
                 width: 35,
                 height: 35,
                 placeholderBuilder: (context) => ShimmerSkeleton(
-                    height: 35, width: 35, margin: EdgeInsets.all(0)),
+                    height: 35,
+                    width: 35,
+                    margin: EdgeInsets.all(0),
+                    cornerRadius: 5.0),
               )),
               SizedBox(width: widthOfBox / 1.8, child: Text(materialType)),
             ],
@@ -110,81 +113,82 @@ Widget fullWidthListViewBuilder(
       itemCount: namesList.length,
       itemBuilder: (BuildContext context, int index) {
         // print(index);
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 10.0),
-          child: fullWidthRoundedRectangleWidget(
-              context,
-              namesList[index],
-              "${updatedOnList[index]}",
-              linkList[index],
-              materialType,
-              whichScreen),
-        );
+        return fullWidthRoundedRectangleWidget(
+            context,
+            namesList[index],
+            "${updatedOnList[index]}",
+            linkList[index],
+            materialType,
+            whichScreen);
       });
 }
 
 Widget fullWidthRoundedRectangleWidget(dynamic context, String title,
     String updatedOn, String link, String materialType, String whichScreen) {
-  return InkWell(
-    borderRadius: BorderRadius.all(Radius.circular(20)),
-    child: ClipRRect(
+  return Padding(
+    padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 10.0),
+    child: InkWell(
       borderRadius: BorderRadius.all(Radius.circular(20)),
-      child: Container(
-        color: Get.isDarkMode ? offBlackColor : offWhiteColor,
-        child: SizedBox(
-          height: 100.0,
-          child: Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Center(
-                    child: SvgPicture.network(
-                  svgLinkMap[materialType], //imageName
-                  color: selectedIconColor,
-                  width: 35,
-                  height: 35,
-                )),
-              ),
-              Container(
-                width: 300,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: SmallTextSize)),
-                    Text(
-                      "Updated On : $updatedOn",
-                      style: TextStyle(
-                          color: Get.isDarkMode
-                              ? darkModeLightTextColor
-                              : lightModeLightTextColor,
-                          fontSize: 12),
-                    )
-                  ],
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+        child: Container(
+          color: Get.isDarkMode ? offBlackColor : offWhiteColor,
+          child: SizedBox(
+            height: 100.0,
+            child: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Center(
+                      child: SvgPicture.network(
+                    svgLinkMap[materialType], //imageName
+                    color: selectedIconColor,
+                    width: 35,
+                    height: 35,
+                  )),
                 ),
-              )
-            ],
+                Container(
+                  width: 300,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(title,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: SmallTextSize)),
+                      Text(
+                        "Updated On : $updatedOn",
+                        style: TextStyle(
+                            color: Get.isDarkMode
+                                ? darkModeLightTextColor
+                                : lightModeLightTextColor,
+                            fontSize: 12),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
+      onTap: () {
+        whichScreen == "material"
+            ? launchURL(link)
+            : Navigator.push(
+                context,
+                PageRouteBuilder(
+                    pageBuilder:
+                        (BuildContext context, animation1, animation2) {
+                      return MaterialScreen(
+                        materialType: materialType,
+                        subjectName: title,
+                        sujectType: whichScreen.split(" ")[1],
+                      );
+                    },
+                    transitionsBuilder: transitionEffectForNavigator()));
+      },
     ),
-    onTap: () {
-      whichScreen == "material"
-          ? launchURL(link)
-          : Navigator.push(
-              context,
-              PageRouteBuilder(
-                  pageBuilder: (BuildContext context, animation1, animation2) {
-                    return MaterialScreen(
-                      materialType: materialType,
-                      subjectName: title,
-                      sujectType: whichScreen.split(" ")[1],
-                    );
-                  },
-                  transitionsBuilder: transitionEffectForNavigator()));
-    },
   );
 }
 

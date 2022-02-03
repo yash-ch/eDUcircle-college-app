@@ -36,4 +36,12 @@ class AppState {
   String getSemester() {
     return getSetting("Semester", "Semester 1");
   }
+
+    void setGE(String course) {
+    putSetting("GE", course);
+  }
+
+  String getGE() {
+    return getSetting("GE", "Select GE");
+  }
 }

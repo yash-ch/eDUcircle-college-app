@@ -1,6 +1,6 @@
 import 'package:duline/screens/clubsPage.dart';
 import 'package:duline/screens/homePage.dart';
-import 'package:duline/screens/navDrawer.dart';
+import 'package:duline/utils/navDrawer.dart';
 import 'package:duline/screens/resourcesPage.dart';
 import 'package:duline/utils/firebaseData.dart';
 import 'package:duline/utils/style.dart';
@@ -47,12 +47,14 @@ List newsPublishDate = [];
 
 //for share dialog
 String sharingText = "";
+String contactFormUrl = "";
 
 class _MainLayoutState extends State<MainLayout> {
   int _selectedTabIndex = 0;
 
   @override
   void initState() {
+    loadingNavDrawerData();
     svgLinkDic();
     loadingEvents();
     loadingNews();
@@ -230,5 +232,15 @@ class _MainLayoutState extends State<MainLayout> {
       newsWebsiteLinks = tempNewsWebsiteLinks;
       newsPublishDate = tempNewsPublishDate;
     });
+  }
+
+  Future<void> loadingNavDrawerData() async {
+    Map rawSharingData = await FirebaseData().otherData("share");
+    sharingText =  rawSharingData["text"];
+
+    Map rawContactFormData =  await FirebaseData().otherData("contactForm");
+    contactFormUrl = rawContactFormData["formLink"];
+
+    setState(() {});
   }
 }

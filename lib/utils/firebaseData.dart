@@ -230,7 +230,7 @@ class FirebaseData {
     DocumentSnapshot<Map<String, dynamic>> otherData = await fireStore
         .collection('OtherData').doc(id).get();
         
-    allTheMaterial = otherData.data()!;
+    allTheMaterial = otherData.data() as Map;
     return allTheMaterial;
   }
 }

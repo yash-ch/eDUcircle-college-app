@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:get/route_manager.dart';
 
-Map subjectMap = {"core": [], "GE": [], "AECC": []};
+Map subjectMap = {"core": [], "GE": <String>[], "AECC": []};
 bool isSubjectListPresent = false;
 
 String courseName = "";
@@ -41,7 +41,7 @@ class _ResourcesState extends State<Resources> {
   Widget build(BuildContext context) {
     double widthOfDevice = widthOrHeightOfDevice(context)["width"];
     return isLoading
-        ? shimmerForMaterials()
+        ? shimmerForMaterials(context)
         : SingleChildScrollView(
             physics: ScrollPhysics(),
             child: Container(
@@ -159,89 +159,29 @@ class _ResourcesState extends State<Resources> {
           int.parse(AppState().getSemester().toString().substring(9, 10));
       subjectMap["core"] =
           await FirebaseData().subjectOfCourse(courseName, semester);
+
+      int semesterForAECC = 0;
+      if (semester == 2 || semester == 4) {
+        semesterForAECC = semester - 1;
+      }
+
       subjectMap["AECC"] =
-          await FirebaseData().aeccGESubjects(semester, "AECC", false);
-      subjectMap["GE"] =
+          await FirebaseData().aeccGESubjects(semesterForAECC, "AECC", false);
+
+      //needed string list in for dialog box in subjectScreenResources so created to raw list to append data
+      List rawGESubjectList =
           await FirebaseData().aeccGESubjects(semester, "GE", false);
+      List<String> anotherRawGESubjectList = [];
+      for (var subject in rawGESubjectList) {
+        anotherRawGESubjectList.add(subject);
+      }
+      subjectMap["GE"] = anotherRawGESubjectList;
+
       setState(() {
         isSubjectListPresent = true;
       });
-    } catch (e) {}
-  }
-
-  Widget shimmerForMaterials() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ShimmerSkeleton(
-          margin: EdgeInsets.fromLTRB(16.0, 0.0, 0.0, 16.0),
-          width: 120,
-          height: 30,
-        ),
-        Row(
-          children: [
-            Flexible(
-              flex: 3,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 0.0, 5.0, 0.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                  child: ShimmerSkeleton(
-                      height: 45,
-                      width: widthOrHeightOfDevice(context)["width"] - 50,
-                      margin: EdgeInsets.all(0)),
-                ),
-              ),
-            ),
-            Flexible(
-              flex: 1,
-              child: Container(
-                padding: const EdgeInsets.fromLTRB(0.0, 0.0, 16.0, 0.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                  child: ShimmerSkeleton(
-                      height: 45,
-                      width: double.maxFinite,
-                      margin: EdgeInsets.all(0)),
-                ),
-              ),
-            )
-          ],
-        ),
-        Padding(padding: EdgeInsets.all(8.0)),
-        ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: 3,
-            itemBuilder: (BuildContext context, int index) {
-              return Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      ShimmerSkeleton(
-                          height: 100.0,
-                          width: (widthOrHeightOfDevice(context)["width"] / 2) -
-                              30,
-                          margin: EdgeInsets.all(0.0)),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      ShimmerSkeleton(
-                          height: 100.0,
-                          width: (widthOrHeightOfDevice(context)["width"] / 2) -
-                              30,
-                          margin: EdgeInsets.all(0.0)),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 20,
-                  )
-                ],
-              );
-            })
-      ],
-    );
+    } catch (e) {
+      print(e);
+    }
   }
 }
