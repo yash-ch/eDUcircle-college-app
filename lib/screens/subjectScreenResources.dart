@@ -1,4 +1,5 @@
 import 'package:duline/screens/resourcesPage.dart';
+import 'package:duline/screens/shimmerWidget.dart';
 import 'package:duline/utils/appState.dart';
 import 'package:duline/utils/firebaseData.dart';
 import 'package:duline/utils/listViewBuilders.dart';
@@ -54,110 +55,96 @@ class _SubjectScreenResourcesState extends State<SubjectScreenResources> {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: !isSubjectListPresent
-          ? Center(
-              child: CircularProgressIndicator(
-              color: selectedIconColor,
-              strokeWidth: 4.0,
-            ))
-          : !_isUpdatedOnListLoaded
-              ? Center(
-                  child: CircularProgressIndicator(
-                  color: selectedIconColor,
-                  strokeWidth: 4.0,
-                ))
-              : SingleChildScrollView(
-                  physics: ScrollPhysics(),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      lightTextTitle("Core Subjects"),
-                      fullWidthListViewBuilder(
+      body: (isSubjectListPresent && _isUpdatedOnListLoaded)
+          ? SingleChildScrollView(
+              physics: ScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  lightTextTitle("Core Subjects"),
+                  fullWidthListViewBuilder(
+                      context,
+                      subjectMap["core"],
+                      _updatedOnMap["core"],
+                      subjectMap["core"],
+                      widget.materialType,
+                      "subject core"),
+                  Padding(padding: EdgeInsets.only(bottom: 10.0)),
+                  subjectMap["AECC"].isNotEmpty
+                      ? lightTextTitle("AECC")
+                      : Offstage(),
+                  subjectMap["AECC"].isNotEmpty
+                      ? fullWidthListViewBuilder(
                           context,
-                          subjectMap["core"],
-                          _updatedOnMap["core"],
-                          subjectMap["core"],
+                          subjectMap["AECC"],
+                          _updatedOnMap["AECC"],
+                          subjectMap["AECC"],
                           widget.materialType,
-                          "subject core"),
-                      Padding(padding: EdgeInsets.only(bottom: 10.0)),
-                      subjectMap["AECC"].isNotEmpty
-                          ? lightTextTitle("AECC")
-                          : Offstage(),
-                      subjectMap["AECC"].isNotEmpty
-                          ? fullWidthListViewBuilder(
-                              context,
-                              subjectMap["AECC"],
-                              _updatedOnMap["AECC"],
-                              subjectMap["AECC"],
-                              widget.materialType,
-                              "subject AECC")
-                          : Offstage(),
-                      subjectMap["AECC"].isNotEmpty
-                          ? Padding(padding: EdgeInsets.only(bottom: 10.0))
-                          : Offstage(),
-                      [1, 2, 3, 4].contains(semester)
-                          ? subjectMap["GE"].isNotEmpty
-                              ? lightTextTitle("Generic Elective")
-                              : Offstage()
-                          : Offstage(),
-                      Padding(
-                        padding:
-                            const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 10.0),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                          child: InkWell(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                            onTap: () {
-                              showMaterialRadioPicker(
-                                  headerColor: Get.isDarkMode
-                                      ? Colors.black45
-                                      : selectedIconColor,
-                                  title: "Select GE",
-                                  context: context,
-                                  items: subjectMap["GE"],
-                                  selectedItem: AppState().getGE(),
-                                  onChanged: (value) {
-                                    AppState().setGE(value.toString());
-                                    setState(() {});
-                                  });
-                            },
-                            child: Container(
-                              color: Get.isDarkMode
-                                  ? offBlackColor
-                                  : offWhiteColor,
-                              padding: EdgeInsets.fromLTRB(16.0, 10.0, 16, 10),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                      width: widthOrHeightOfDevice(
-                                              context)["width"] -
+                          "subject AECC")
+                      : Offstage(),
+                  subjectMap["AECC"].isNotEmpty
+                      ? Padding(padding: EdgeInsets.only(bottom: 10.0))
+                      : Offstage(),
+                  [1, 2, 3, 4].contains(semester)
+                      ? subjectMap["GE"].isNotEmpty
+                          ? lightTextTitle("Generic Elective")
+                          : Offstage()
+                      : Offstage(),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 10.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      child: InkWell(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        onTap: () {
+                          showMaterialRadioPicker(
+                              headerColor: Get.isDarkMode
+                                  ? Colors.black45
+                                  : selectedIconColor,
+                              title: "Select GE",
+                              context: context,
+                              items: subjectMap["GE"],
+                              selectedItem: AppState().getGE(),
+                              onChanged: (value) {
+                                AppState().setGE(value.toString());
+                                setState(() {});
+                              });
+                        },
+                        child: Container(
+                          color: Get.isDarkMode ? offBlackColor : offWhiteColor,
+                          padding: EdgeInsets.fromLTRB(16.0, 10.0, 16, 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                  width:
+                                      widthOrHeightOfDevice(context)["width"] -
                                           200,
-                                      child: Text(
-                                        AppState().getGE(),
-                                        overflow: TextOverflow.fade,
-                                      )),
-                                  Icon(Icons.arrow_drop_down_outlined)
-                                ],
-                              ),
-                            ),
+                                  child: Text(
+                                    AppState().getGE(),
+                                    overflow: TextOverflow.fade,
+                                  )),
+                              Icon(Icons.arrow_drop_down_outlined)
+                            ],
                           ),
                         ),
                       ),
-                      ([1, 2, 3, 4].contains(semester) &&
-                              AppState().getGE() != "Select GE")
-                          ? fullWidthRoundedRectangleWidget(
-                              context,
-                              AppState().getGE(),
-                              _updatedOnMap["GE"][0],
-                              "",
-                              widget.materialType,
-                              "subject GE")
-                          : Offstage(),
-                    ],
+                    ),
                   ),
-                ),
+                  ([1, 2, 3, 4].contains(semester) &&
+                          AppState().getGE() != "Select GE")
+                      ? fullWidthRoundedRectangleWidget(
+                          context,
+                          AppState().getGE(),
+                          _updatedOnMap["GE"][0],
+                          "",
+                          widget.materialType,
+                          "subject GE")
+                      : Offstage(),
+                ],
+              ),
+            )
+          : subjectShimmer(context),
     );
   }
 

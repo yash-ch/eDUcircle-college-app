@@ -126,7 +126,7 @@ Widget eventTextShimmer() {
       ? ShimmerSkeleton(
           margin: EdgeInsets.fromLTRB(16.0, 0.0, 0.0, 16.0),
           width: 160,
-          height: 40,
+          height: 30,
           cornerRadius: 20.0)
       : Offstage();
 }
@@ -150,4 +150,76 @@ Widget eventTabShimmer() {
                         cornerRadius: 20.0);
                   })))
       : Offstage();
+}
+
+Widget subjectShimmer(context) {
+  return SingleChildScrollView(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ShimmerSkeleton(
+            margin: EdgeInsets.fromLTRB(16.0, 0.0, 0.0, 16.0),
+            width: 160,
+            height: 30,
+            cornerRadius: 20.0),
+        ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: 2,
+            itemBuilder: (context, index) {
+              return fullWidthRectangleShimmer(context);
+            }),
+        ShimmerSkeleton(
+            margin: EdgeInsets.fromLTRB(16.0, 0.0, 0.0, 16.0),
+            width: 160,
+            height: 30,
+            cornerRadius: 20.0),
+        ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: 2,
+            itemBuilder: (context, index) {
+              return fullWidthRectangleShimmer(context);
+            }),
+        ShimmerSkeleton(
+            margin: EdgeInsets.fromLTRB(16.0, 0.0, 0.0, 16.0),
+            width: 160,
+            height: 30,
+            cornerRadius: 20.0),
+        ShimmerSkeleton(
+            margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 16.0),
+            width: widthOrHeightOfDevice(context)["width"],
+            height: 40,
+            cornerRadius: 20.0),
+        fullWidthRectangleShimmer(context)
+      ],
+    ),
+  );
+}
+
+Widget materialShimmer(context) {
+  return SingleChildScrollView(
+    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      ShimmerSkeleton(
+          margin: EdgeInsets.fromLTRB(16.0, 0.0, 0.0, 16.0),
+          width: widthOrHeightOfDevice(context)["width"] - 100,
+          height: 30,
+          cornerRadius: 20.0),
+      ListView.builder(
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: 4,
+          itemBuilder: (context, index) {
+            return fullWidthRectangleShimmer(context);
+          }),
+    ]),
+  );
+}
+
+Widget fullWidthRectangleShimmer(context) {
+  return ShimmerSkeleton(
+      margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 16.0),
+      width: widthOrHeightOfDevice(context)["width"],
+      height: 100,
+      cornerRadius: 20.0);
 }

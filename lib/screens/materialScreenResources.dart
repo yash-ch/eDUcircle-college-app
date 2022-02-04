@@ -1,4 +1,5 @@
 import 'package:duline/screens/resourcesPage.dart';
+import 'package:duline/screens/shimmerWidget.dart';
 import 'package:duline/utils/firebaseData.dart';
 import 'package:duline/utils/listViewBuilders.dart';
 import 'package:duline/utils/style.dart';
@@ -53,13 +54,8 @@ class _MaterialScreenState extends State<MaterialScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: !isMaterialLoad
-          ? Center(
-              child: CircularProgressIndicator(
-              color: selectedIconColor,
-              strokeWidth: 4.0,
-            ))
-          : Column(
+      body: isMaterialLoad
+          ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               children: [
@@ -90,7 +86,8 @@ class _MaterialScreenState extends State<MaterialScreen> {
                           "material"),
                 ),
               ],
-            ),
+            )
+          : materialShimmer(context),
     );
   }
 

@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:duline/MainLayout.dart';
 import 'package:duline/screens/navScreens.dart';
 import 'package:duline/utils/style.dart';
@@ -23,14 +22,12 @@ class NavDrawer extends StatelessWidget {
               accountEmail: Text('dulineapp@gmail.com'),
               currentAccountPicture: CircleAvatar(
                 child: ClipOval(
-                  child: CachedNetworkImage(
-                    imageUrl:
-                        'https://oflutter.com/wp-content/uploads/2021/02/girl-profile.png',
-                    fit: BoxFit.cover,
-                    width: 90,
-                    height: 90,
-                  ),
-                ),
+                    child: Image.asset(
+                  "assets/images/duline.png",
+                  fit: BoxFit.cover,
+                  width: 90,
+                  height: 90,
+                )),
               ),
               decoration: BoxDecoration(
                   color: Get.isDarkMode ? Colors.black45 : selectedIconColor),
