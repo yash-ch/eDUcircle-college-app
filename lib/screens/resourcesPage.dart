@@ -163,6 +163,8 @@ class _ResourcesState extends State<Resources> {
       int semesterForAECC = 0;
       if (semester == 2 || semester == 4) {
         semesterForAECC = semester - 1;
+      }else{
+        semesterForAECC = semester;
       }
 
       subjectMap["AECC"] =
@@ -170,7 +172,7 @@ class _ResourcesState extends State<Resources> {
 
       //needed string list in for dialog box in subjectScreenResources so created to raw list to append data
       List rawGESubjectList =
-          await FirebaseData().aeccGESubjects(semester, "GE", false);
+          await FirebaseData().aeccGESubjects(semesterForAECC, "GE", false);
       List<String> anotherRawGESubjectList = [];
       for (var subject in rawGESubjectList) {
         anotherRawGESubjectList.add(subject);

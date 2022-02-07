@@ -70,7 +70,6 @@ class _MainLayoutState extends State<MainLayout> {
       case 0:
         {
           _tab = HomePage();
-          
         }
         break;
       case 1:
@@ -215,6 +214,27 @@ class _MainLayoutState extends State<MainLayout> {
 
     //for downloading whole data
     List rawAllNewsData = await FirebaseData().newsData(true);
+
+    //for sorting news according to the latest news (stupid me didn't store the data in timestamp)
+    rawAllNewsData.forEach((element) {
+      print(element["publish_date"]);
+      print(DateTime(
+          int.parse(element["publish_date"].toString().substring(5, 8)),
+          int.parse(element["publish_date"].toString().substring(3, 5)),
+          int.parse(element["publish_date"].toString().substring(0, 2))));
+    });
+
+    rawAllNewsData.sort((a, b) => DateTime(
+            int.parse(a["publish_date"].toString().substring(5, 8)),
+            int.parse(a["publish_date"].toString().substring(3, 5)),
+            int.parse(a["publish_date"].toString().substring(0, 2)))
+        .compareTo(DateTime(
+            int.parse(b["publish_date"].toString().substring(5, 8)),
+            int.parse(b["publish_date"].toString().substring(3, 5)),
+            int.parse(b["publish_date"].toString().substring(0, 2)))));
+
+    rawAllNewsData = rawAllNewsData.reversed.toList();
+
     List tempNewsHeadlines = [];
     List tempNewsImageLinks = [];
     List tempNewsWebsiteLinks = [];
@@ -236,9 +256,9 @@ class _MainLayoutState extends State<MainLayout> {
 
   Future<void> loadingNavDrawerData() async {
     Map rawSharingData = await FirebaseData().otherData("share");
-    sharingText =  rawSharingData["text"];
+    sharingText = rawSharingData["text"];
 
-    Map rawContactFormData =  await FirebaseData().otherData("contactForm");
+    Map rawContactFormData = await FirebaseData().otherData("contactForm");
     contactFormUrl = rawContactFormData["formLink"];
 
     setState(() {});

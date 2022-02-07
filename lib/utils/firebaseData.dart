@@ -207,7 +207,7 @@ class FirebaseData {
     for (var event in eventData.docs) {
       if (initialOrWhole) {
         QuerySnapshot<Map<String, dynamic>> postsReference =
-            await event.reference.collection("Posts").limit(10).get();
+            await event.reference.collection("Posts").orderBy("publish_date").limit(10).get();
 
         for (var post in postsReference.docs) {
           allTheMaterial.add(post.data());

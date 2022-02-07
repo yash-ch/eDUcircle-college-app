@@ -25,12 +25,14 @@ class SubjectScreenResources extends StatefulWidget {
 class _SubjectScreenResourcesState extends State<SubjectScreenResources> {
   bool _isUpdatedOnListLoaded = false;
   Map _updatedOnMap = {"core": [], "GE": [], "AECC": []};
-  int semesterForGE = 0;
+  int semesterForAecc = 0;
 
   @override
   void initState() {
     if (semester == 2 || semester == 4) {
-      semesterForGE = semester - 1;
+      semesterForAecc = semester - 1;
+    } else {
+      semesterForAecc = semester;
     }
     _loadData();
     super.initState();
@@ -71,7 +73,11 @@ class _SubjectScreenResourcesState extends State<SubjectScreenResources> {
                       "subject core"),
                   Padding(padding: EdgeInsets.only(bottom: 10.0)),
                   subjectMap["AECC"].isNotEmpty
-                      ? lightTextTitle("AECC")
+                      ? lightTextTitle(semesterForAecc == 1
+                          ? "AECC"
+                          : semesterForAecc == 3
+                              ? "SEC"
+                              : "DSE")
                       : Offstage(),
                   subjectMap["AECC"].isNotEmpty
                       ? fullWidthListViewBuilder(
@@ -86,9 +92,7 @@ class _SubjectScreenResourcesState extends State<SubjectScreenResources> {
                       ? Padding(padding: EdgeInsets.only(bottom: 10.0))
                       : Offstage(),
                   [1, 2, 3, 4].contains(semester)
-                      ? subjectMap["GE"].isNotEmpty
-                          ? lightTextTitle("Generic Elective")
-                          : Offstage()
+                      ? lightTextTitle("Generic Elective")
                       : Offstage(),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 10.0),
@@ -132,7 +136,8 @@ class _SubjectScreenResourcesState extends State<SubjectScreenResources> {
                     ),
                   ),
                   ([1, 2, 3, 4].contains(semester) &&
-                          AppState().getGE() != "Select GE")
+                          AppState().getGE() != "Select GE" &&
+                          subjectMap["GE"].isNotEmpty)
                       ? fullWidthRoundedRectangleWidget(
                           context,
                           AppState().getGE(),
@@ -166,8 +171,13 @@ class _SubjectScreenResourcesState extends State<SubjectScreenResources> {
       }
 
       for (var subject in subjectMap["AECC"]) {
-        List materialData = await FirebaseData()
-            .aeccOrGEData(semester, "AECC", widget.materialType, subject);
+        if (semester == 2 || semester == 4) {
+          semesterForAecc = semester - 1;
+        } else {
+          semesterForAecc = semester;
+        }
+        List materialData = await FirebaseData().aeccOrGEData(
+            semesterForAecc, "AECC", widget.materialType, subject);
         List _rawListOfUpdatedOn = [];
         for (var item in materialData) {
           _rawListOfUpdatedOn.add(item["updatedOn"]);
@@ -183,7 +193,7 @@ class _SubjectScreenResourcesState extends State<SubjectScreenResources> {
       if ([1, 2, 3, 4].contains(semester)) {
         for (var subject in subjectMap["GE"]) {
           List materialData = await FirebaseData()
-              .aeccOrGEData(semesterForGE, "GE", widget.materialType, subject);
+              .aeccOrGEData(semester, "GE", widget.materialType, subject);
           List _rawListOfUpdatedOn = [];
           for (var item in materialData) {
             _rawListOfUpdatedOn.add(item["updatedOn"]);
