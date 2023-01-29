@@ -172,7 +172,7 @@ class _ResourcesState extends State<Resources> {
 
       //needed string list in for dialog box in subjectScreenResources so created to raw list to append data
       List rawGESubjectList =
-          await FirebaseData().aeccGESubjects(semesterForAECC, "GE", false);
+          await FirebaseData().aeccGESubjects(semester, "GE", false);
       List<String> anotherRawGESubjectList = [];
       for (var subject in rawGESubjectList) {
         anotherRawGESubjectList.add(subject);
